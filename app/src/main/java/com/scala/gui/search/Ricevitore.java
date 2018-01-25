@@ -1,4 +1,4 @@
-package com.giacca.gui.search;
+package com.scala.gui.search;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -9,7 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
-import com.giacca.R;
+import com.scala.R;
 
 public class Ricevitore extends BroadcastReceiver {
 

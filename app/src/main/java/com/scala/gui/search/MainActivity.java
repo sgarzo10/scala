@@ -1,4 +1,4 @@
-package com.giacca.gui.search;
+package com.scala.gui.search;
 
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -9,7 +9,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import com.giacca.R;
+import com.scala.R;
 
 public class MainActivity extends AppCompatActivity {
 

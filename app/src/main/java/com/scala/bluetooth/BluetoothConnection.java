@@ -1,4 +1,4 @@
-package com.giacca.bluetooth;
+package com.scala.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;

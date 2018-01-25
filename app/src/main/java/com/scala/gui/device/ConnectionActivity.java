@@ -1,4 +1,4 @@
-package com.giacca.gui.device;
+package com.scala.gui.device;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -6,8 +6,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import com.giacca.R;
-import com.giacca.bluetooth.BluetoothConnection;
+import com.scala.R;
+import com.scala.bluetooth.BluetoothConnection;
 import java.util.Date;
 
 public class ConnectionActivity extends AppCompatActivity {
@@ -15,8 +15,6 @@ public class ConnectionActivity extends AppCompatActivity {
     private BluetoothConnection bluetooth;
     private EditText e;
     private TextView t;
-    private TextView txtLa;
-    private TextView txtLo;
 
     BluetoothConnection getBluetooth() { return bluetooth;}
     EditText getE() {
@@ -24,12 +22,6 @@ public class ConnectionActivity extends AppCompatActivity {
     }
     TextView getT() {
         return t;
-    }
-    TextView getTLa() {
-        return txtLa;
-    }
-    TextView getTLo() {
-        return txtLo;
     }
 
     @Override
@@ -43,9 +35,6 @@ public class ConnectionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_connection);
         Button invia = (Button) findViewById(R.id.invia);
         Button setData = (Button) findViewById(R.id.setData);
-        Button setGps = (Button) findViewById(R.id.setGps);
-        txtLa = (TextView) findViewById(R.id.txtLat);
-        txtLo = (TextView) findViewById(R.id.txtLo);
         e = (EditText) findViewById(R.id.inserisci);
         t = (TextView) findViewById(R.id.txtViewLog);
         String nome = getIntent().getExtras().getString("nome");
@@ -54,7 +43,6 @@ public class ConnectionActivity extends AppCompatActivity {
         bluetooth = new BluetoothConnection();
         invia.setOnClickListener(ascoltatore);
         setData.setOnClickListener(ascoltatore);
-        setGps.setOnClickListener(ascoltatore);
         if (bluetooth.connetti(mac)){
             String s = R.string.connected + nome;
             t.setText(s);

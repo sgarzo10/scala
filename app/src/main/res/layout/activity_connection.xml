@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.giacca.gui.device.ConnectionActivity">
+    tools:context="com.scala.gui.device.ConnectionActivity">
 
     <EditText
         android:layout_width="wrap_content"
@@ -59,57 +59,11 @@
         android:textAlignment="textStart" />
 
     <Button
-        android:text="SET DATA"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/setData"
-        android:layout_alignBaseline="@+id/setGps"
-        android:layout_alignBottom="@+id/setGps"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="17dp" />
-
-    <TextView
-        android:text="x.xxxxx"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/tLo"
-        android:id="@+id/txtLat"
-        android:textSize="18sp"
-        android:layout_toEndOf="@+id/tLo" />
-
-    <TextView
-        android:text="x.xxxxx"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/tLo"
-        android:layout_toEndOf="@+id/tLo"
-        android:id="@+id/txtLo"
-        android:textSize="18sp" />
-
-    <TextView
-        android:text="Longitudine:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tLo"
-        android:textSize="18sp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:text="Langitudine:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tLa"
-        android:textSize="18sp"
-        android:layout_alignBaseline="@+id/txtLat"
-        android:layout_alignBottom="@+id/txtLat"
-        android:layout_toStartOf="@+id/txtLat" />
-
-    <Button
-        android:text="SET GPS"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/setGps"
-        android:layout_above="@+id/txtLat" />
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/txtViewLog"
+        android:text="SET DATA" />
 
 </RelativeLayout>

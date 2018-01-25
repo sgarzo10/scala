@@ -1,4 +1,4 @@
-package com.giacca.bluetooth;
+package com.scala.bluetooth;
 
 
 public class MyHandler extends android.os.Handler{

@@ -1,4 +1,4 @@
-package com.giacca.gui.search;
+package com.scala.gui.search;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -7,9 +7,9 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import com.giacca.R;
-import com.giacca.bluetooth.Bluetooth;
-import com.giacca.gui.device.ConnectionActivity;
+import com.scala.R;
+import com.scala.bluetooth.Bluetooth;
+import com.scala.gui.device.ConnectionActivity;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Set;
