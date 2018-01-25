@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.giacca.gui.device.ConnectionActivity">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="messaggio"
+        android:inputType="text"
+        android:id="@+id/inserisci"
+        android:visibility="visible"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/invia" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Invia"
+        android:id="@+id/invia"
+        android:singleLine="true"
+        android:visibility="visible"
+        android:layout_marginLeft="15dp"
+        android:layout_alignBaseline="@+id/inserisci"
+        android:layout_alignBottom="@+id/inserisci"
+        android:layout_alignParentEnd="true" />
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtViewLog"
+        android:layout_marginEnd="36dp"
+        android:layout_marginTop="22dp"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="::LOG::"
+        android:layout_width="wrap_content"
+        android:id="@+id/txtViewLog"
+        android:layout_marginTop="23dp"
+        android:textSize="18sp"
+        android:layout_below="@+id/invia"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_height="250dp"
+        android:scrollbarSize="15dp"
+        android:scrollbarStyle="insideInset"
+        android:singleLine="false"
+        android:scrollbars="horizontal|vertical"
+        style="@style/Widget.AppCompat.TextView.SpinnerItem"
+        android:verticalScrollbarPosition="right"
+        android:textAlignment="textStart" />
+
+    <Button
+        android:text="SET DATA"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/setData"
+        android:layout_alignBaseline="@+id/setGps"
+        android:layout_alignBottom="@+id/setGps"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="17dp" />
+
+    <TextView
+        android:text="x.xxxxx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tLo"
+        android:id="@+id/txtLat"
+        android:textSize="18sp"
+        android:layout_toEndOf="@+id/tLo" />
+
+    <TextView
+        android:text="x.xxxxx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/tLo"
+        android:layout_toEndOf="@+id/tLo"
+        android:id="@+id/txtLo"
+        android:textSize="18sp" />
+
+    <TextView
+        android:text="Longitudine:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tLo"
+        android:textSize="18sp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="Langitudine:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tLa"
+        android:textSize="18sp"
+        android:layout_alignBaseline="@+id/txtLat"
+        android:layout_alignBottom="@+id/txtLat"
+        android:layout_toStartOf="@+id/txtLat" />
+
+    <Button
+        android:text="SET GPS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/setGps"
+        android:layout_above="@+id/txtLat" />
+
+</RelativeLayout>
