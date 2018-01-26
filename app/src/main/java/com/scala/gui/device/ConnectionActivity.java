@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import com.scala.R;
 import com.scala.bluetooth.BluetoothConnection;
@@ -18,8 +19,8 @@ public class ConnectionActivity extends AppCompatActivity {
     private BluetoothConnection bluetooth;
     private Button scalaOn;
     private Button scalaOff;
-    private Button scalaSu;
-    private Button scalaGiu;
+    private ImageButton scalaSu;
+    private ImageButton scalaGiu;
     private EditText tempo;
     private TextView output;
     private String nome;
@@ -34,8 +35,8 @@ public class ConnectionActivity extends AppCompatActivity {
     }
     Button getScalaOn() { return scalaOn; }
     Button getScalaOff() { return scalaOff; }
-    Button getScalaSu() { return scalaSu; }
-    Button getScalaGiu() { return scalaGiu; }
+    ImageButton getScalaSu() { return scalaSu; }
+    ImageButton getScalaGiu() { return scalaGiu; }
     String getNome() { return nome;}
     String getMac() { return mac;}
 
@@ -53,8 +54,8 @@ public class ConnectionActivity extends AppCompatActivity {
         Button seriale = (Button) findViewById(R.id.seriale);
         scalaOn = (Button) findViewById(R.id.scalaOn);
         scalaOff = (Button) findViewById(R.id.scalaOff);
-        scalaSu = (Button) findViewById(R.id.salita);
-        scalaGiu = (Button) findViewById(R.id.discesa);
+        scalaSu = (ImageButton) findViewById(R.id.salita);
+        scalaGiu = (ImageButton) findViewById(R.id.discesa);
         tempo = (EditText) findViewById(R.id.tempo);
         output = (TextView) findViewById(R.id.output);
         nome = getIntent().getExtras().getString("nome");
