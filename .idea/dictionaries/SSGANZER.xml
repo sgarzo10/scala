@@ -7,13 +7,17 @@
       <w>arduino</w>
       <w>ascoltatore</w>
       <w>associati</w>
+      <w>backgorund</w>
       <w>benvenuto</w>
       <w>cerca</w>
+      <w>configura</w>
+      <w>configurazione</w>
       <w>connessione</w>
       <w>connesso</w>
       <w>connettendo</w>
       <w>connetti</w>
       <w>corso</w>
+      <w>direzione</w>
       <w>disconesso</w>
       <w>disconnesso</w>
       <w>disconnetti</w>
@@ -39,11 +43,13 @@
       <w>ricevitore</w>
       <w>ricevuto</w>
       <w>saluto</w>
+      <w>seriale</w>
       <w>sono</w>
       <w>spegni</w>
       <w>spento</w>
       <w>stato</w>
       <w>terminata</w>
+      <w>testo</w>
       <w>trovati</w>
     </words>
   </dictionary>

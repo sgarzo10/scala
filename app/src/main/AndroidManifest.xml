@@ -25,5 +25,8 @@
             android:name="com.scala.gui.device.ConnectionActivity"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name="com.scala.gui.device.SerialActivity"
+            android:screenOrientation="portrait" />
     </application>
 </manifest>

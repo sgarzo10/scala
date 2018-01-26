@@ -8,21 +8,36 @@ import android.widget.EditText;
 import android.widget.TextView;
 import com.scala.R;
 import com.scala.bluetooth.BluetoothConnection;
+
+import org.w3c.dom.Text;
+
 import java.util.Date;
 
 public class ConnectionActivity extends AppCompatActivity {
 
     private BluetoothConnection bluetooth;
-    private EditText e;
-    private TextView t;
+    private Button scalaOn;
+    private Button scalaOff;
+    private Button scalaSu;
+    private Button scalaGiu;
+    private EditText tempo;
+    private TextView output;
+    private String nome;
+    private String mac;
 
     BluetoothConnection getBluetooth() { return bluetooth;}
-    EditText getE() {
-        return e;
+    TextView getOutput() {
+        return output;
     }
-    TextView getT() {
-        return t;
+    EditText getTempo() {
+        return tempo;
     }
+    Button getScalaOn() { return scalaOn; }
+    Button getScalaOff() { return scalaOff; }
+    Button getScalaSu() { return scalaSu; }
+    Button getScalaGiu() { return scalaGiu; }
+    String getNome() { return nome;}
+    String getMac() { return mac;}
 
     @Override
     public void onStart() {
@@ -33,26 +48,32 @@ public class ConnectionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connection);
-        Button invia = (Button) findViewById(R.id.invia);
         Button setData = (Button) findViewById(R.id.setData);
-        e = (EditText) findViewById(R.id.inserisci);
-        t = (TextView) findViewById(R.id.txtViewLog);
-        String nome = getIntent().getExtras().getString("nome");
-        String mac = getIntent().getExtras().getString("mac");
+        Button configura = (Button) findViewById(R.id.configura);
+        Button seriale = (Button) findViewById(R.id.seriale);
+        scalaOn = (Button) findViewById(R.id.scalaOn);
+        scalaOff = (Button) findViewById(R.id.scalaOff);
+        scalaSu = (Button) findViewById(R.id.salita);
+        scalaGiu = (Button) findViewById(R.id.discesa);
+        tempo = (EditText) findViewById(R.id.tempo);
+        output = (TextView) findViewById(R.id.output);
+        nome = getIntent().getExtras().getString("nome");
+        mac = getIntent().getExtras().getString("mac");
         AscoltatoreConnectionActivity ascoltatore = new AscoltatoreConnectionActivity(this);
         bluetooth = new BluetoothConnection();
-        invia.setOnClickListener(ascoltatore);
         setData.setOnClickListener(ascoltatore);
+        configura.setOnClickListener(ascoltatore);
+        scalaOn.setOnClickListener(ascoltatore);
+        scalaOff.setOnClickListener(ascoltatore);
+        scalaSu.setOnClickListener(ascoltatore);
+        scalaGiu.setOnClickListener(ascoltatore);
+        seriale.setOnClickListener(ascoltatore);
         if (bluetooth.connetti(mac)){
             String s = R.string.connected + nome;
-            t.setText(s);
-            invia.setVisibility(View.VISIBLE);
-            e.setVisibility(View.VISIBLE);
-            if (!bluetooth.invia("data" + new Date().toString()))
-                t.setText(R.string.send_error);
+            output.setText(s);
         }
         else
-            t.setText(R.string.error);
+            output.setText(R.string.error);
     }
 
     @Override
@@ -74,8 +95,8 @@ public class ConnectionActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (bluetooth.disconnetti())
-            t.setText(R.string.disconnected);
+            output.setText(R.string.disconnected);
         else
-            t.setText(R.string.error);
+            output.setText(R.string.error);
     }
 }

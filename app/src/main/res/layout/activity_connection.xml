@@ -9,61 +9,89 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.scala.gui.device.ConnectionActivity">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="messaggio"
-        android:inputType="text"
-        android:id="@+id/inserisci"
-        android:visibility="visible"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/invia" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Invia"
-        android:id="@+id/invia"
-        android:singleLine="true"
-        android:visibility="visible"
-        android:layout_marginLeft="15dp"
-        android:layout_alignBaseline="@+id/inserisci"
-        android:layout_alignBottom="@+id/inserisci"
-        android:layout_alignParentEnd="true" />
-
-    <Space
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/txtViewLog"
-        android:layout_marginEnd="36dp"
-        android:layout_marginTop="22dp"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:text="::LOG::"
-        android:layout_width="wrap_content"
-        android:id="@+id/txtViewLog"
-        android:layout_marginTop="23dp"
-        android:textSize="18sp"
-        android:layout_below="@+id/invia"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_height="250dp"
-        android:scrollbarSize="15dp"
-        android:scrollbarStyle="insideInset"
-        android:singleLine="false"
-        android:scrollbars="horizontal|vertical"
-        style="@style/Widget.AppCompat.TextView.SpinnerItem"
-        android:verticalScrollbarPosition="right"
-        android:textAlignment="textStart" />
-
     <Button
         android:id="@+id/setData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/txtViewLog"
+        android:layout_alignBaseline="@+id/discesa"
+        android:layout_alignBottom="@+id/discesa"
+        android:layout_alignParentEnd="true"
         android:text="SET DATA" />
+
+    <Button
+        android:id="@+id/salita"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/invia"
+        android:layout_marginTop="23dp"
+        android:text="SALITA" />
+
+    <Button
+        android:id="@+id/discesa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/salita"
+        android:layout_centerHorizontal="true"
+        android:text="DISCESA" />
+
+    <Button
+        android:id="@+id/scalaOn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/salita"
+        android:layout_marginTop="45dp"
+        android:text="ON" />
+
+    <Button
+        android:id="@+id/scalaOff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/scalaOn"
+        android:layout_alignBottom="@+id/scalaOn"
+        android:layout_alignStart="@+id/discesa"
+        android:text="OFF" />
+
+    <EditText
+        android:id="@+id/tempo"
+        style="@style/Widget.AppCompat.EditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/scalaOff"
+        android:layout_below="@+id/scalaOn"
+        android:layout_marginTop="38dp"
+        android:ems="10"
+        android:inputType="number"
+        android:selectAllOnFocus="false"
+        android:singleLine="false"
+        android:text="TEMPO" />
+
+    <Button
+        android:id="@+id/configura"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/tempo"
+        android:layout_alignParentEnd="true"
+        android:text="CONFIGURA" />
+
+    <Button
+        android:id="@+id/seriale"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tempo"
+        android:layout_marginTop="56dp"
+        android:layout_toStartOf="@+id/configura"
+        android:text="MONITOR SERIALE" />
+
+    <TextView
+        android:id="@+id/output"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/tempo"
+        android:layout_marginBottom="71dp"
+        android:editable="false"
+        android:text="OUTPUT" />
 
 </RelativeLayout>
