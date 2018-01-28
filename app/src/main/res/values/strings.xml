@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Arduino</string>
+    <string name="app_name">Scala</string>
     <string name="saluto">Benvenuto!</string>
     <string name="error">Errore Generico</string>
     <string name="send_error">Errore invio!</string>

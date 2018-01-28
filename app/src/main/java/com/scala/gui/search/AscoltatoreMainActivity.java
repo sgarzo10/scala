@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Set;
 
-public class AscoltatoreMainActivity implements View.OnClickListener {
+class AscoltatoreMainActivity implements View.OnClickListener {
 
     private MainActivity app;
     private boolean ricerca;

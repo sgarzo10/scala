@@ -6,7 +6,7 @@ import android.view.View;
 import com.scala.R;
 import java.util.Date;
 
-public class AscoltatoreConnectionActivity implements View.OnClickListener {
+class AscoltatoreConnectionActivity implements View.OnClickListener {
 
     private ConnectionActivity app;
     private String direzione;
@@ -24,22 +24,22 @@ public class AscoltatoreConnectionActivity implements View.OnClickListener {
             case R.id.salita:
                 direzione = "DIR:SU";
                 app.getScalaGiu().setAlpha(0.5f);
-                app.getScalaSu().setAlpha(1);
+                app.getScalaSu().setAlpha(1f);
                 break;
             case R.id.discesa:
                 direzione = "DIR:GIU";
                 app.getScalaSu().setAlpha(0.5f);//  BUTTON 0 INVISIBLE 1 VISIBLE  BACKGROUND  0 INVISIBLE 255 VISIBLE
-                app.getScalaGiu().setAlpha(1);
+                app.getScalaGiu().setAlpha(1f);
                 break;
             case R.id.scalaOn:
                 luce = "LUCE:ON";
                 app.getScalaOff().setAlpha(0.5f);
-                app.getScalaOn().setAlpha(1);
+                app.getScalaOn().setAlpha(1f);
                 break;
             case R.id.scalaOff:
                 luce = "LUCE:OFF";
                 app.getScalaOn().setAlpha(0.5f);
-                app.getScalaOff().setAlpha(1);
+                app.getScalaOff().setAlpha(1f);
                 break;
             case R.id.seriale:
                 Intent openSeriale = new Intent(app,SerialActivity.class);

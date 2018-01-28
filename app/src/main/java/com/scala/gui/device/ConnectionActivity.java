@@ -2,6 +2,7 @@ package com.scala.gui.device;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,6 +48,7 @@ public class ConnectionActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i("CONNECTION_ACTIVITY","onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connection);
         Button setData = (Button) findViewById(R.id.setData);
@@ -69,35 +71,42 @@ public class ConnectionActivity extends AppCompatActivity {
         scalaSu.setOnClickListener(ascoltatore);
         scalaGiu.setOnClickListener(ascoltatore);
         seriale.setOnClickListener(ascoltatore);
-        if (bluetooth.connetti(mac)){
-            String s = R.string.connected + nome;
-            output.setText(s);
-        }
-        else
-            output.setText(R.string.error);
     }
 
     @Override
     protected void onResume()
     {
+        Log.i("CONNECTION_ACTIVITY","onResume");
         super.onResume();
+        boolean connesso = false;
+        while (!connesso) {
+            if (bluetooth.connetti(mac)) {
+                String s = R.string.connected + nome;
+                output.setText(s);
+                connesso = true;
+            } else
+                output.setText(R.string.error);
+        }
     }
 
     @Override
     protected void onPause()
     {
         super.onPause();
+        Log.i("CONNECTION_ACTIVITY","onPause");
+        while (!bluetooth.disconnetti()) {}
     }
 
     @Override
-    public void onStop() { super.onStop(); }
+    public void onStop() {
+        Log.i("CONNECTION_ACTIVITY","onStop");
+        super.onStop();
+    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (bluetooth.disconnetti())
-            output.setText(R.string.disconnected);
-        else
-            output.setText(R.string.error);
+        Log.i("CONNECTION_ACTIVITY","onDestroy");
+        while (!bluetooth.disconnetti()) {}
     }
 }

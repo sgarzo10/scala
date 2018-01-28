@@ -5,7 +5,7 @@ import android.widget.TextView;
 
 import com.scala.R;
 
-public class AscoltatoreSerialActivity implements View.OnClickListener{
+class AscoltatoreSerialActivity implements View.OnClickListener{
 
     private SerialActivity app;
 
