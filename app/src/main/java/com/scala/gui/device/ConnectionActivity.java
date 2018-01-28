@@ -70,6 +70,10 @@ public class ConnectionActivity extends AppCompatActivity {
         scalaSu.setOnClickListener(ascoltatore);
         scalaGiu.setOnClickListener(ascoltatore);
         seriale.setOnClickListener(ascoltatore);
+        scalaGiu.setAlpha(0.5f);
+        scalaGiu.setAlpha(0.5f);
+        scalaOn.setAlpha(0.5f);
+        scalaOff.setAlpha(0.5f);
     }
 
     @Override
