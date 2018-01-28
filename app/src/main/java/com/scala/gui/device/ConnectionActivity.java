@@ -54,6 +54,7 @@ public class ConnectionActivity extends AppCompatActivity {
         Button setData = (Button) findViewById(R.id.setData);
         Button configura = (Button) findViewById(R.id.configura);
         Button seriale = (Button) findViewById(R.id.seriale);
+        AscoltatoreConnectionActivity ascoltatore = new AscoltatoreConnectionActivity(this);
         scalaOn = (Button) findViewById(R.id.scalaOn);
         scalaOff = (Button) findViewById(R.id.scalaOff);
         scalaSu = (ImageButton) findViewById(R.id.salita);
@@ -62,8 +63,6 @@ public class ConnectionActivity extends AppCompatActivity {
         output = (TextView) findViewById(R.id.output);
         nome = getIntent().getExtras().getString("nome");
         mac = getIntent().getExtras().getString("mac");
-        AscoltatoreConnectionActivity ascoltatore = new AscoltatoreConnectionActivity(this);
-        bluetooth = new BluetoothConnection();
         setData.setOnClickListener(ascoltatore);
         configura.setOnClickListener(ascoltatore);
         scalaOn.setOnClickListener(ascoltatore);
@@ -78,6 +77,7 @@ public class ConnectionActivity extends AppCompatActivity {
     {
         Log.i("CONNECTION_ACTIVITY","onResume");
         super.onResume();
+        bluetooth = new BluetoothConnection();
         boolean connesso = false;
         while (!connesso) {
             if (bluetooth.connetti(mac)) {

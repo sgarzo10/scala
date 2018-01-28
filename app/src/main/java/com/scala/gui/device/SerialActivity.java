@@ -80,5 +80,6 @@ public class SerialActivity  extends AppCompatActivity {
     protected void onDestroy() {
         Log.i("SERIAL_ACTIVITY","onDestroy");
         super.onDestroy();
+        while (!bluetooth.disconnetti()) {}
     }
 }
