@@ -48,7 +48,7 @@ class AscoltatoreConnectionActivity implements View.OnClickListener {
                 app.startActivity(openSeriale);
                 break;
             case R.id.configura:
-                String configurazioneScala = direzione + luce + "TEMPO:" + app.getTempo().getText().toString();
+                String configurazioneScala = "set " + direzione + luce + "TEMPO:" + app.getTempo().getText().toString();
                 if (!app.getBluetooth().invia(configurazioneScala))
                     app.getOutput().setText(R.string.error);
                 else {
