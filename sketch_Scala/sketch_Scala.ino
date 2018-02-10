@@ -13,6 +13,8 @@
 #define PIR_ALTO 4    //PIR Primo Piano
 #define PULS_PIN 8    //pulsante per accensione manuale
 #define FOTO_PIN A0  //Fotoresistenza
+#define BLACK 0x000000
+#define WHITE 0xFFFFFF
 
 //Oggetto COM Bluettoth e Variabile buffer
 SoftwareSerial bluetooth(6, 7); //BLUETOOTH: PIN TXD 6, PIN RXD 7
@@ -47,35 +49,31 @@ void setup()
   Serial.begin (9600);   //Inizializzo Seriale
   Serial.println ("SCALA START");
   FastLED.addLeds<WS2811, DATA_PIN, BRG>(leds, NUM_LEDS);   //Inizializzo Array di LED
-  //FastLED.addLeds<WS2811, DATA_PIN, BRG>(leds, NUM_LEDS);   //Inizializzo Array di LED
   bluetooth.begin(9600);  //Inizializzo COM Bluetooth
 }
 
-void cambia_led(boolean on, uint8_t posizione, uint16_t livello)
+void cambia_led(uint8_t posizione, uint16_t livello, uint32_t color)
 {
-  if (on)
-    leds[posizione] = 0xFF0000;
-  else
-    leds[posizione] = CRGB::Black;
+  leds[posizione] = color;
   leds[posizione].fadeLightBy(livello);
   FastLED.show();
 }
   
-void cambia_striscia(uint16_t inizio, uint16_t fine, boolean salita, boolean on, uint16_t tempo, uint16_t livello)
+void cambia_striscia(uint16_t inizio, uint16_t fine, uint16_t tempo, uint16_t livello, uint32_t color)
 {
-  if (salita)
+  if (inizio < fine)
   {
     for (inizio;inizio<fine;inizio++)
      {
-      cambia_led(on,inizio,livello);
+      cambia_led(inizio,livello,color);
       delay(tempo);
      }
   }
-  else
+  if (inizio > fine)
   {
-    for(inizio;inizio>=fine;inizio--)
+    for(inizio-1;inizio>=fine;inizio--)
     {
-      cambia_led(on,inizio,livello);
+      cambia_led(inizio,livello,color);
       delay(tempo);
     }
   }
@@ -97,13 +95,13 @@ void letturaPir()
       //STO SALENDO-ACCENDO LUCI IN SALITA
       if (mov_salita==false and mov_discesa==false)
       {    
-        cambia_striscia(0, NUM_LEDS, true, true, tempo_salita_ON, 100);
+        cambia_striscia(0, NUM_LEDS, tempo_salita_ON, 100, WHITE);
         mov_salita=true;
       }
       //SONO SCESO-SPENGO LUCI IN DISCESA
       if (mov_salita==false and mov_discesa==true)
       {    
-        cambia_striscia(NUM_LEDS-1,0,false, false, tempo_discesa_OFF, 100);
+        cambia_striscia(NUM_LEDS, 0, tempo_discesa_OFF, 100, BLACK);
         mov_discesa=false;
       }
     }
@@ -113,13 +111,13 @@ void letturaPir()
       // SONO SALITO-SPENGO LUCI IN SALITA
       if (mov_salita==true and mov_discesa==false )
       {
-        cambia_striscia(0, NUM_LEDS, true, false, tempo_salita_OFF, 100);
+        cambia_striscia(0, NUM_LEDS, tempo_salita_OFF, 100, BLACK);
         mov_salita=false;
       }  
       // STO SCENDENDO-ACCENDO LUCI IN DISCESA
       if (mov_salita==false and mov_discesa==false )
       {
-        cambia_striscia(NUM_LEDS-1, 0, false, true, tempo_discesa_ON, 100);
+        cambia_striscia(NUM_LEDS, 0, tempo_discesa_ON, 100, WHITE);
         mov_discesa=true;
       }        
     }
@@ -147,12 +145,12 @@ void read_BUTTON()
   if (sign_PULS==true and scalaAccesa==true)
   {
     scalaAccesa=false;
-    cambia_striscia(0, NUM_LEDS, true, false, 0, 100);
+    cambia_striscia(0, NUM_LEDS, 0, 100, BLACK);
   }
   else if (sign_PULS==true and scalaAccesa==false)
   {
     scalaAccesa=true;
-    cambia_striscia(0, NUM_LEDS, true, true, 0, 100);
+    cambia_striscia(0, NUM_LEDS, 0, 100, WHITE);
   }
 }
 
@@ -178,12 +176,11 @@ void loop()
   BLUETOOTH_READ();
   if (BLUETOOTH_BUFFER != "")
     BLUETOOTH_COMMAND();*/
-  //cambia_led(true,1,140);
-  //cambia_led(true,0,140);
+  cambia_led(true, 1, 140, WHITE);
   delay(2000);
-  cambia_led(false,1,100);
+  cambia_led(true, 1, 140, BLACK);
   delay(2000);
-  cambia_striscia(0, 20, true, true, tempo_salita_ON, 140);
+  cambia_striscia(0, 20, tempo_salita_ON, 140, WHITE);
 }
 
 void BLUETOOTH_READ(){
