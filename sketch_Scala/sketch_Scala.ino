@@ -15,6 +15,9 @@
 #define FOTO_PIN A0  //Fotoresistenza
 #define BLACK 0x000000
 #define WHITE 0xFFFFFF
+#define RED 0xFF0000
+#define GREEN 0x00FF00
+#define BLUE 0x0000FF
 
 //Oggetto COM Bluettoth e Variabile buffer
 SoftwareSerial bluetooth(6, 7); //BLUETOOTH: PIN TXD 6, PIN RXD 7
@@ -25,6 +28,7 @@ boolean sign_PIR_BASSO=false;
 boolean sign_PIR_ALTO=false;
 boolean mov_salita=false;
 boolean mov_discesa=false;
+boolean luce = false;
 uint16_t tempo_salita_ON = 100;
 uint16_t tempo_salita_OFF = 100;
 uint16_t tempo_discesa_ON = 100;
@@ -38,7 +42,6 @@ uint16_t sogliaBUIO=380;
 
 //Varaibili per gestione Pulsante Manuale
 boolean sign_PULS=false;
-boolean scalaAccesa=false;
 
 // Definisco n. led nella striscia
 CRGB leds[NUM_LEDS];
@@ -81,14 +84,53 @@ void cambia_striscia(uint16_t inizio, uint16_t fine, uint16_t tempo, uint16_t li
 
 void letturaPir()
 {
-  sign_PIR_BASSO=digitalRead(PIR_BASSO);
-  sign_PIR_ALTO=digitalRead(PIR_ALTO);
+  if ( mov_salita == false and mov_discesa == false )
+  {
+    sign_PIR_ALTO=digitalRead(PIR_ALTO);
+    sign_PIR_BASSO=digitalRead(PIR_BASSO);
+  }
+  if ( mov_salita == true )
+    sign_PIR_ALTO=digitalRead(PIR_ALTO);
+  if ( mov_discesa == true )  
+    sign_PIR_BASSO=digitalRead(PIR_BASSO);
   Serial.print("PIR BASSO:");
   Serial.println(sign_PIR_BASSO);
   Serial.print("PIR ALTO:");
   Serial.println(sign_PIR_ALTO);
   if (presenzaLUCE==false)
   {
+    if ( mov_salita == false and mov_discesa == false and luce == false and sign_PIR_BASSO != sign_PIR_ALTO )
+    {
+      luce = true;
+      if (sign_PIR_BASSO == true)
+      {
+         cambia_striscia(0, NUM_LEDS, tempo_salita_ON, 100, WHITE);
+         mov_salita=true;
+         sign_PIR_BASSO = false;
+      }
+      if (sign_PIR_ALTO == true)
+      {
+         cambia_striscia(NUM_LEDS, 0, tempo_discesa_ON, 100, WHITE);
+         mov_discesa=true;
+         sign_PIR_ALTO = false;
+      }
+    }
+    else
+    {
+      if ( mov_salita == true and luce == true and sign_PIR_ALTO == true )
+      {
+        cambia_striscia(0, NUM_LEDS, tempo_salita_OFF, 100, BLACK);
+        mov_salita=false;
+        luce = false;
+      }
+      if ( mov_discesa == true and luce == true and sign_PIR_BASSO == true )
+      {
+        cambia_striscia(NUM_LEDS, 0, tempo_salita_OFF, 100, BLACK);
+        mov_discesa=false;
+        luce = false;
+      }
+    }
+    /*
     //RILEVO PIR BASSO E NON PIR ALTO
     if (sign_PIR_BASSO==true and sign_PIR_ALTO==false)
     {
@@ -119,8 +161,7 @@ void letturaPir()
       {
         cambia_striscia(NUM_LEDS, 0, tempo_discesa_ON, 100, WHITE);
         mov_discesa=true;
-      }        
-    }
+      }        */
   }
   else
     Serial.println("LUCE RILEVATA SCALA OFF!!");
@@ -142,14 +183,14 @@ void read_BUTTON()
   sign_PULS=digitalRead(PULS_PIN);
   Serial.print("BUTTON: ");
   Serial.println(sign_PULS);
-  if (sign_PULS==true and scalaAccesa==true)
+  if (sign_PULS==true and luce==true)
   {
-    scalaAccesa=false;
+    luce=false;
     cambia_striscia(0, NUM_LEDS, 0, 100, BLACK);
   }
-  else if (sign_PULS==true and scalaAccesa==false)
+  else if (sign_PULS==true and luce==false)
   {
-    scalaAccesa=true;
+    luce=true;
     cambia_striscia(0, NUM_LEDS, 0, 100, WHITE);
   }
 }
@@ -165,22 +206,21 @@ void statoSCALA()
 
 void loop()
 {
-  
-  /* //Lettura Pulsante Manuale
+  /*
+  //Lettura Pulsante Manuale
   read_BUTTON();
   //Lettura abilitazione Fotoresistenza
   presenzaLUCE=letturaLUCE();
-  statoSCALA();
+  //statoSCALA();
   letturaPir();*/
+   for (int x=64;x<200;x=x+10)
+      cambia_striscia(0, NUM_LEDS,0, x, GREEN);
+   cambia_striscia(0, NUM_LEDS,0, 100, BLACK);
   /*//Lettura Bluetooth
   BLUETOOTH_READ();
   if (BLUETOOTH_BUFFER != "")
     BLUETOOTH_COMMAND();*/
-  cambia_led(true, 1, 140, WHITE);
-  delay(2000);
-  cambia_led(true, 1, 140, BLACK);
-  delay(2000);
-  cambia_striscia(0, 20, tempo_salita_ON, 140, WHITE);
+  delay(100);
 }
 
 void BLUETOOTH_READ(){
