@@ -72,9 +72,9 @@ void cambia_striscia(uint16_t inizio, uint16_t fine, uint16_t tempo, uint16_t li
       delay(tempo);
      }
   }
-  if (inizio > fine)
+  else
   {
-    for(inizio-1;inizio>=fine;inizio--)
+    for(inizio-1;inizio>fine;inizio--)
     {
       cambia_led(inizio,livello,color);
       delay(tempo);
@@ -84,53 +84,16 @@ void cambia_striscia(uint16_t inizio, uint16_t fine, uint16_t tempo, uint16_t li
 
 void letturaPir()
 {
-  if ( mov_salita == false and mov_discesa == false )
-  {
-    sign_PIR_ALTO=digitalRead(PIR_ALTO);
-    sign_PIR_BASSO=digitalRead(PIR_BASSO);
-  }
-  if ( mov_salita == true )
-    sign_PIR_ALTO=digitalRead(PIR_ALTO);
-  if ( mov_discesa == true )  
-    sign_PIR_BASSO=digitalRead(PIR_BASSO);
+  
+  sign_PIR_ALTO=digitalRead(PIR_ALTO);
+  sign_PIR_BASSO=digitalRead(PIR_BASSO);
   Serial.print("PIR BASSO:");
   Serial.println(sign_PIR_BASSO);
   Serial.print("PIR ALTO:");
   Serial.println(sign_PIR_ALTO);
   if (presenzaLUCE==false)
   {
-    if ( mov_salita == false and mov_discesa == false and luce == false and sign_PIR_BASSO != sign_PIR_ALTO )
-    {
-      luce = true;
-      if (sign_PIR_BASSO == true)
-      {
-         cambia_striscia(0, NUM_LEDS, tempo_salita_ON, 100, WHITE);
-         mov_salita=true;
-         sign_PIR_BASSO = false;
-      }
-      if (sign_PIR_ALTO == true)
-      {
-         cambia_striscia(NUM_LEDS, 0, tempo_discesa_ON, 100, WHITE);
-         mov_discesa=true;
-         sign_PIR_ALTO = false;
-      }
-    }
-    else
-    {
-      if ( mov_salita == true and luce == true and sign_PIR_ALTO == true )
-      {
-        cambia_striscia(0, NUM_LEDS, tempo_salita_OFF, 100, BLACK);
-        mov_salita=false;
-        luce = false;
-      }
-      if ( mov_discesa == true and luce == true and sign_PIR_BASSO == true )
-      {
-        cambia_striscia(NUM_LEDS, 0, tempo_salita_OFF, 100, BLACK);
-        mov_discesa=false;
-        luce = false;
-      }
-    }
-    /*
+
     //RILEVO PIR BASSO E NON PIR ALTO
     if (sign_PIR_BASSO==true and sign_PIR_ALTO==false)
     {
@@ -139,34 +102,39 @@ void letturaPir()
       {    
         cambia_striscia(0, NUM_LEDS, tempo_salita_ON, 100, WHITE);
         mov_salita=true;
+        luce = true;
       }
       //SONO SCESO-SPENGO LUCI IN DISCESA
       if (mov_salita==false and mov_discesa==true)
-      {    
+      {  
+        Serial.println("SONO SCESO-SPENGO LUCI IN DISCESA");
         cambia_striscia(NUM_LEDS, 0, tempo_discesa_OFF, 100, BLACK);
         mov_discesa=false;
+        luce = false;
       }
     }
     //RILEVO PIR BASSO E NON PIR ALTO  
-    if (sign_PIR_BASSO==false and sign_PIR_ALTO==true)
+    else if (sign_PIR_BASSO==false and sign_PIR_ALTO==true)
     {
-      // SONO SALITO-SPENGO LUCI IN SALITA
-      if (mov_salita==true and mov_discesa==false )
-      {
-        cambia_striscia(0, NUM_LEDS, tempo_salita_OFF, 100, BLACK);
-        mov_salita=false;
-      }  
       // STO SCENDENDO-ACCENDO LUCI IN DISCESA
       if (mov_salita==false and mov_discesa==false )
       {
         cambia_striscia(NUM_LEDS, 0, tempo_discesa_ON, 100, WHITE);
         mov_discesa=true;
-      }        */
+        luce = true;
+      }     
+      // SONO SALITO-SPENGO LUCI IN SALITA
+      if (mov_salita==true and mov_discesa==false )
+      {
+        cambia_striscia(0, NUM_LEDS, tempo_salita_OFF, 100, BLACK);
+        mov_salita=false;
+        luce = false;
+      }  
+    }
+    else
+      Serial.println("LUCE RILEVATA SCALA OFF!!");
   }
-  else
-    Serial.println("LUCE RILEVATA SCALA OFF!!");
 }
-
 boolean letturaLUCE()
 {
   sign_LUCE=analogRead(FOTO_PIN);
@@ -206,21 +174,23 @@ void statoSCALA()
 
 void loop()
 {
-  /*
+  
   //Lettura Pulsante Manuale
   read_BUTTON();
   //Lettura abilitazione Fotoresistenza
   presenzaLUCE=letturaLUCE();
   //statoSCALA();
-  letturaPir();*/
+  letturaPir();
+  /*
    for (int x=64;x<200;x=x+10)
       cambia_striscia(0, NUM_LEDS,0, x, GREEN);
    cambia_striscia(0, NUM_LEDS,0, 100, BLACK);
+  */ 
   /*//Lettura Bluetooth
   BLUETOOTH_READ();
   if (BLUETOOTH_BUFFER != "")
     BLUETOOTH_COMMAND();*/
-  delay(100);
+  delay(400);
 }
 
 void BLUETOOTH_READ(){
