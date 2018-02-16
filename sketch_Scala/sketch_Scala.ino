@@ -4,7 +4,7 @@
  * #################################
  *
 */
-#include "FastLED.h"  //Libreria contenente istruzioni per striscia LED WS2811
+#include "FastLED.h"
 #include <SoftwareSerial.h>
 
 #define NUM_LEDS 40   //n. led nella striscia CRI = 100
@@ -18,6 +18,9 @@
 #define RED 0xFF0000
 #define GREEN 0x00FF00
 #define BLUE 0x0000FF
+#define YELLOW 0xFFFF00
+#define PURPLE 0xFF00FF
+#define AZURE 0x00FFFF
 
 //Oggetto COM Bluettoth e Variabile buffer
 SoftwareSerial bluetooth(6, 7); //BLUETOOTH: PIN TXD 6, PIN RXD 7
@@ -28,7 +31,6 @@ boolean sign_PIR_BASSO=false;
 boolean sign_PIR_ALTO=false;
 boolean mov_salita=false;
 boolean mov_discesa=false;
-boolean luce = false;
 uint16_t tempo_salita_ON = 100;
 uint16_t tempo_salita_OFF = 100;
 uint16_t tempo_discesa_ON = 100;
@@ -42,6 +44,7 @@ uint16_t sogliaBUIO=380;
 
 //Varaibili per gestione Pulsante Manuale
 boolean sign_PULS=false;
+boolean luce = false;
 
 // Definisco n. led nella striscia
 CRGB leds[NUM_LEDS];
@@ -100,14 +103,13 @@ void letturaPir()
       //STO SALENDO-ACCENDO LUCI IN SALITA
       if (mov_salita==false and mov_discesa==false)
       {    
-        cambia_striscia(0, NUM_LEDS, tempo_salita_ON, 100, WHITE);
+        cambia_striscia(0, NUM_LEDS, tempo_salita_ON, 100, PURPLE);
         mov_salita=true;
         luce = true;
       }
       //SONO SCESO-SPENGO LUCI IN DISCESA
       if (mov_salita==false and mov_discesa==true)
       {  
-        Serial.println("SONO SCESO-SPENGO LUCI IN DISCESA");
         cambia_striscia(NUM_LEDS, 0, tempo_discesa_OFF, 100, BLACK);
         mov_discesa=false;
         luce = false;
@@ -119,7 +121,7 @@ void letturaPir()
       // STO SCENDENDO-ACCENDO LUCI IN DISCESA
       if (mov_salita==false and mov_discesa==false )
       {
-        cambia_striscia(NUM_LEDS, 0, tempo_discesa_ON, 100, WHITE);
+        cambia_striscia(NUM_LEDS, 0, tempo_discesa_ON, 100, PURPLE);
         mov_discesa=true;
         luce = true;
       }     
@@ -137,13 +139,16 @@ void letturaPir()
 }
 boolean letturaLUCE()
 {
-  sign_LUCE=analogRead(FOTO_PIN);
-  Serial.print("Presenza LUCE: ");
-  Serial.println(sign_LUCE);
-  if (sign_LUCE>=sogliaBUIO)
-    return false;
-  else
-    return true;
+  boolean presenza = false;
+  if (usaFOTO == true)
+  {
+    sign_LUCE=analogRead(FOTO_PIN);
+    Serial.print("Presenza LUCE: ");
+    Serial.println(sign_LUCE);
+    if (not sign_LUCE>=sogliaBUIO)
+      presenza = true;
+  }
+  return presenza;    
 } 
 
 void read_BUTTON()
