@@ -50,6 +50,7 @@ void setup()
   pinMode(FOTO_PIN, INPUT);   //Imposto PIN FOTORESISTENZA  
   Serial.begin (9600);   //Inizializzo Seriale
   Serial.println ("SCALA START");
+  Serial.println("------------------------------------------");
   FastLED.addLeds<WS2811, DATA_PIN, BRG>(leds, NUM_LEDS);   //Inizializzo Array di LED
   bluetooth.begin(9600);  //Inizializzo COM Bluetooth
   colori[0] = {"BLK", 0x000000}; //BLACK
@@ -62,14 +63,14 @@ void setup()
   colori[7] = {"AZU", 0x00FFFF}; //AZURE
 }
 
-void cambia_led(uint8_t posizione, uint16_t livello, uint32_t color)
+void cambia_led(int16_t posizione, uint16_t livello, uint32_t color)
 {
   leds[posizione] = color;
   leds[posizione].fadeLightBy(livello);
   FastLED.show();
 }
   
-void cambia_striscia(uint16_t inizio, uint16_t fine, uint16_t tempo, uint16_t livello, uint32_t color)
+void cambia_striscia(int16_t inizio, int16_t fine, uint16_t tempo, uint16_t livello, uint32_t color)
 {
   if (inizio < fine)
   {
@@ -81,7 +82,7 @@ void cambia_striscia(uint16_t inizio, uint16_t fine, uint16_t tempo, uint16_t li
   }
   else
   {
-    for(inizio-1;inizio>fine;inizio--)
+    for(inizio = inizio-1;inizio>=fine;inizio--)
     {
       cambia_led(inizio,livello,color);
       delay(tempo);
@@ -140,6 +141,7 @@ void letturaPir()
       Serial.println("LUCE RILEVATA SCALA OFF!!");
   }
 }
+
 boolean letturaLUCE()
 {
   boolean presenza = false;
@@ -198,7 +200,7 @@ void loop()
   BLUETOOTH_READ();
   if (BLUETOOTH_BUFFER != "")
     BLUETOOTH_COMMAND();*/
-  delay(400);
+  delay(200);
 }
 
 void BLUETOOTH_READ(){
