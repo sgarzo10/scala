@@ -8,6 +8,7 @@
 #include <SoftwareSerial.h>
 
 #define NUM_LEDS 40  //n. led nella striscia CRI = 100
+#define NUM_COL 10  //n. led nella striscia CRI = 100
 #define DATA_PIN 9   //uscita per collegamento striscia led
 #define PIR_BASSO 2  //PIR Piano Terra
 #define PIR_ALTO 4   //PIR Primo Piano
@@ -19,7 +20,7 @@ typedef struct {
   String nome;
   uint32_t valore;
   } colore;
-colore colori[10];
+colore colori[NUM_COL];
 
 //Oggetto COM Bluettoth e Variabile buffer
 SoftwareSerial bluetooth(6, 7); //BLUETOOTH: PIN TXD 6, PIN RXD 7
@@ -258,7 +259,7 @@ uint32_t getColor(String nome)
 {
   uint32_t valore=0xFFFFFF;
   boolean trovato = false;
-  for(uint8_t i=0;i<8 and trovato == false;i++)
+  for(uint8_t i=0;i<NUM_COL and trovato == false;i++)
   {
     if (colori[i].nome == nome)
     {
