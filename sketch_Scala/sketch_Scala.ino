@@ -35,6 +35,10 @@ uint16_t tempo_salita_ON = 100;
 uint16_t tempo_salita_OFF = 100;
 uint16_t tempo_discesa_ON = 100;
 uint16_t tempo_discesa_OFF = 100;
+uint32_t colore_salita_ON = WHITE;
+uint32_t colore_salita_OFF = BLACK;
+uint32_t colore_discesa_ON = WHITE;
+uint32_t colore_discesa_OFF = BLACK;
 
 //Variabili per gestione Fotoresistenza
 boolean usaFOTO = true;
@@ -87,7 +91,6 @@ void cambia_striscia(uint16_t inizio, uint16_t fine, uint16_t tempo, uint16_t li
 
 void letturaPir()
 {
-  
   sign_PIR_ALTO=digitalRead(PIR_ALTO);
   sign_PIR_BASSO=digitalRead(PIR_BASSO);
   Serial.print("PIR BASSO:");
@@ -103,14 +106,14 @@ void letturaPir()
       //STO SALENDO-ACCENDO LUCI IN SALITA
       if (mov_salita==false and mov_discesa==false)
       {    
-        cambia_striscia(0, NUM_LEDS, tempo_salita_ON, 100, PURPLE);
+        cambia_striscia(0, NUM_LEDS, tempo_salita_ON, 100, colore_salita_ON);
         mov_salita=true;
         luce = true;
       }
       //SONO SCESO-SPENGO LUCI IN DISCESA
       if (mov_salita==false and mov_discesa==true)
       {  
-        cambia_striscia(NUM_LEDS, 0, tempo_discesa_OFF, 100, BLACK);
+        cambia_striscia(NUM_LEDS, 0, tempo_discesa_OFF, 100, colore_discesa_OFF);
         mov_discesa=false;
         luce = false;
       }
@@ -121,14 +124,14 @@ void letturaPir()
       // STO SCENDENDO-ACCENDO LUCI IN DISCESA
       if (mov_salita==false and mov_discesa==false )
       {
-        cambia_striscia(NUM_LEDS, 0, tempo_discesa_ON, 100, PURPLE);
+        cambia_striscia(NUM_LEDS, 0, tempo_discesa_ON, 100, colore_discesa_ON);
         mov_discesa=true;
         luce = true;
       }     
       // SONO SALITO-SPENGO LUCI IN SALITA
       if (mov_salita==true and mov_discesa==false )
       {
-        cambia_striscia(0, NUM_LEDS, tempo_salita_OFF, 100, BLACK);
+        cambia_striscia(0, NUM_LEDS, tempo_salita_OFF, 100, colore_salita_OFF);
         mov_salita=false;
         luce = false;
       }  
@@ -212,24 +215,30 @@ void BLUETOOTH_READ(){
 void BLUETOOTH_COMMAND()
 {
   if (BLUETOOTH_BUFFER.substring(0, 4) == "set ")
-    SET_TEMPO(BLUETOOTH_BUFFER.substring(4, BLUETOOTH_BUFFER.length()));
+    SET_TEMPO_COLORE(BLUETOOTH_BUFFER.substring(4, BLUETOOTH_BUFFER.length()));
   if (BLUETOOTH_BUFFER.substring(0, 4) == "foto")
     SET_FOTO(BLUETOOTH_BUFFER.substring(4, BLUETOOTH_BUFFER.length())); 
   BLUETOOTH_BUFFER = "";
 }
 
-void SET_TEMPO(String s)
+void SET_TEMPO_COLORE(String s)
 {
-  String direzione = s.substring(4,s.indexOf("LUCE:"));
-  String luce = s.substring(s.indexOf("LUCE:")+5,s.indexOf("TEMPO:"));
+  String direzione = s.substring(4,s.indexOf("COL:"));
+  String colore = s.substring(s.indexOf("COL:")+4,s.indexOf("TEMPO:"));
   String tempo = s.substring(s.indexOf("TEMPO:")+6,s.length());
-  if (direzione == "SU" && luce == "ON")
+  if (direzione == "SU" && colore != "BLK")
+  {
     tempo_salita_ON = tempo.toInt();
-  if (direzione == "GIU" && luce == "ON")
+    colore_salita_ON = WHITE;
+  }
+  if (direzione == "GIU" && colore != "BLK")
+  {
     tempo_discesa_ON = tempo.toInt();
-  if (direzione == "SU" && luce == "OFF")
+    colore_discesa_ON = WHITE;
+  }
+  if (direzione == "SU" && colore == "BLK")
     tempo_salita_OFF = tempo.toInt();
-  if (direzione == "GIU" && luce == "OFF")
+  if (direzione == "GIU" && colore == "BLK")
     tempo_discesa_OFF = tempo.toInt();
 }
 

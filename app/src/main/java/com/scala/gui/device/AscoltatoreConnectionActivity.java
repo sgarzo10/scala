@@ -32,12 +32,12 @@ class AscoltatoreConnectionActivity implements View.OnClickListener {
                 app.getScalaGiu().setAlpha(1f);
                 break;
             case R.id.scalaOn:
-                luce = "LUCE:ON";
+                luce = "COL:WHT";
                 app.getScalaOff().setAlpha(0.5f);
                 app.getScalaOn().setAlpha(1f);
                 break;
             case R.id.scalaOff:
-                luce = "LUCE:OFF";
+                luce = "COL:BLK";
                 app.getScalaOn().setAlpha(0.5f);
                 app.getScalaOff().setAlpha(1f);
                 break;
