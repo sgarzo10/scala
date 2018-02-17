@@ -8,7 +8,7 @@
 #include <SoftwareSerial.h>
 
 #define NUM_LEDS 40  //n. led nella striscia CRI = 100
-#define NUM_COL 10  //n. led nella striscia CRI = 100
+#define NUM_COL 8  //n. led nella striscia CRI = 100
 #define DATA_PIN 9   //uscita per collegamento striscia led
 #define PIR_BASSO 2  //PIR Piano Terra
 #define PIR_ALTO 4   //PIR Primo Piano
@@ -20,22 +20,36 @@ typedef struct {
   String nome;
   uint32_t valore;
   } colore;
-colore colori[NUM_COL];
+colore lista_colori[NUM_COL];
 
 //Oggetto COM Bluettoth e Variabile buffer
 SoftwareSerial bluetooth(6, 7); //BLUETOOTH: PIN TXD 6, PIN RXD 7
 String BLUETOOTH_BUFFER = "";
 
 //Variabili per funzionamento scala e pulsante
+uint8_t flag_print= 1; //|0-No Print |1-Serial.Print |2-Bluetooth Print
 boolean sign_PIR_BASSO=false;
 boolean sign_PIR_ALTO=false;
 boolean sign_PULS=false;
 boolean luce = false;
 boolean mov_salita=false;
 boolean mov_discesa=false;
-uint16_t tempi[6] = {100, 100, 100, 100, 0, 0}; //salita ON, salita OFF, discesa ON, discesa OFF, pulsante ON, pulsante OFF
-uint32_t colori_movimento[6] = {0xFFFFFF, 0x000000, 0xFFFFFF, 0x000000, 0xFFFFFF, 0x000000};
+/*
+------------------------------------------------------
+||  POS:  ||             DESCRIZIONE:               ||
+------------------------------------------------------
+||   0    ||  tempo/colore/luminosità salita ON     ||
+||   1    ||  tempo/colore/luminosità salita OFF    ||
+||   2    ||  tempo/colore/luminosità discesa ON    ||
+||   3    ||  tempo/colore/luminosità discesa OFF   ||
+||   4    ||  tempo/colore/luminosità pulsante ON   ||
+||   5    ||  tempo/colore/luminosità pulsante OFF  ||
+------------------------------------------------------
+*/
+uint16_t tempi[6] = {100, 100, 100, 100, 0, 0};
+uint32_t colori[6] = {0xFFFFFF, 0x000000, 0xFFFFFF, 0x000000, 0xFFFFFF, 0x000000};
 uint8_t livelli[6] = {140, 140, 140, 140, 140, 140};
+
 
 //Variabili per gestione Fotoresistenza
 boolean usaFOTO = true;
@@ -50,18 +64,34 @@ void setup()
 {  
   pinMode(FOTO_PIN, INPUT);   //Imposto PIN FOTORESISTENZA  
   Serial.begin (9600);   //Inizializzo Seriale
-  Serial.println ("SCALA START");
-  Serial.println("------------------------------------------");
+  myprintln ("SCALA START");
+  myprintln("------------------------------------------");
   FastLED.addLeds<WS2811, DATA_PIN, BRG>(leds, NUM_LEDS);   //Inizializzo Array di LED
   bluetooth.begin(9600);  //Inizializzo COM Bluetooth
-  colori[0] = {"BLK", 0x000000}; //BLACK
-  colori[1] = {"WHT", 0xFFFFFF}; //WHITE
-  colori[2] = {"RED", 0xFF0000}; //RED
-  colori[3] = {"GRN", 0x00FF00}; //GREEN
-  colori[4] = {"BLU", 0x0000FF}; //BLUE
-  colori[5] = {"YEL", 0xFFFF00}; //YELLOW
-  colori[6] = {"PUR", 0xFF00FF}; //PURPLE
-  colori[7] = {"AZU", 0x00FFFF}; //AZURE
+  lista_colori[0] = {"BLK", 0x000000}; //BLACK
+  lista_colori[1] = {"WHT", 0xFFFFFF}; //WHITE
+  lista_colori[2] = {"RED", 0xFF0000}; //RED
+  lista_colori[3] = {"GRN", 0x00FF00}; //GREEN
+  lista_colori[4] = {"BLU", 0x0000FF}; //BLUE
+  lista_colori[5] = {"YEL", 0xFFFF00}; //YELLOW
+  lista_colori[6] = {"PUR", 0xFF00FF}; //PURPLE
+  lista_colori[7] = {"AZU", 0x00FFFF}; //AZURE
+}
+
+void myprint(String mex)
+{
+  if (flag_print==1)
+    Serial.print(mex);
+  if (flag_print==2)
+    bluetooth.print(mex);
+}
+
+void myprintln(String mex)
+{
+  if (flag_print==1)
+    Serial.println(mex);
+  if (flag_print==2)
+    bluetooth.println(mex);    
 }
 
 void cambia_led(int16_t posizione, uint16_t livello, uint32_t color)
@@ -95,27 +125,26 @@ void letturaPir()
 {
   sign_PIR_ALTO=digitalRead(PIR_ALTO);
   sign_PIR_BASSO=digitalRead(PIR_BASSO);
-  Serial.print("PIR BASSO:");
-  Serial.println(sign_PIR_BASSO);
-  Serial.print("PIR ALTO:");
-  Serial.println(sign_PIR_ALTO);
+  myprint("PIR BASSO:");
+  myprintln((String)sign_PIR_BASSO);
+  myprint("PIR ALTO:");
+  myprintln((String)sign_PIR_ALTO);
   if (presenzaLUCE==false)
   {
-
     //RILEVO PIR BASSO E NON PIR ALTO
     if (sign_PIR_BASSO==true and sign_PIR_ALTO==false)
     {
       //STO SALENDO-ACCENDO LUCI IN SALITA
       if (mov_salita==false and mov_discesa==false)
       {    
-        cambia_striscia(0, NUM_LEDS, tempi[0], livelli[0], colori_movimento[0]);
+        cambia_striscia(0, NUM_LEDS, tempi[0], livelli[0], colori[0]);
         mov_salita=true;
         luce = true;
       }
       //SONO SCESO-SPENGO LUCI IN DISCESA
       if (mov_salita==false and mov_discesa==true)
       {  
-        cambia_striscia(NUM_LEDS, 0, tempi[3], livelli[3], colori_movimento[3]);
+        cambia_striscia(NUM_LEDS, 0, tempi[3], livelli[3], colori[3]);
         mov_discesa=false;
         luce = false;
       }
@@ -126,20 +155,20 @@ void letturaPir()
       // STO SCENDENDO-ACCENDO LUCI IN DISCESA
       if (mov_salita==false and mov_discesa==false )
       {
-        cambia_striscia(NUM_LEDS, 0, tempi[2], livelli[2], colori_movimento[2]);
+        cambia_striscia(NUM_LEDS, 0, tempi[2], livelli[2], colori[2]);
         mov_discesa=true;
         luce = true;
       }     
       // SONO SALITO-SPENGO LUCI IN SALITA
       if (mov_salita==true and mov_discesa==false )
       {
-        cambia_striscia(0, NUM_LEDS, tempi[1], livelli[1], colori_movimento[1]);
+        cambia_striscia(0, NUM_LEDS, tempi[1], livelli[1], colori[1]);
         mov_salita=false;
         luce = false;
       }  
     }
     else
-      Serial.println("LUCE RILEVATA SCALA OFF!!");
+      myprintln("LUCE RILEVATA SCALA OFF!!");
   }
 }
 
@@ -149,8 +178,8 @@ boolean letturaLUCE()
   if (usaFOTO == true)
   {
     sign_LUCE=analogRead(FOTO_PIN);
-    Serial.print("Presenza LUCE: ");
-    Serial.println(sign_LUCE);
+    myprint("Presenza LUCE: ");
+    myprintln((String)sign_LUCE);
     if (not sign_LUCE>=sogliaBUIO)
       presenza = true;
   }
@@ -160,47 +189,48 @@ boolean letturaLUCE()
 void read_BUTTON()
 {
   sign_PULS=digitalRead(PULS_PIN);
-  Serial.print("BUTTON: ");
-  Serial.println(sign_PULS);
+  myprint("BUTTON: ");
+  myprintln((String)sign_PULS);
   if (sign_PULS==true and luce==true)
   {
     luce=false;
-    cambia_striscia(0, NUM_LEDS, tempi[5], livelli[5], colori_movimento[5]);
+    cambia_striscia(0, NUM_LEDS, tempi[5], livelli[5], colori[5]);
   }
   else if (sign_PULS==true and luce==false)
   {
     luce=true;
-    cambia_striscia(0, NUM_LEDS, tempi[4], livelli[4], colori_movimento[4]);
+    cambia_striscia(0, NUM_LEDS, tempi[4], livelli[4], colori[4]);
   }
 }
 
 void statoSCALA()
 {
-  Serial.print("STATO SCALA:");
+  myprint("STATO SCALA:");
   if (presenzaLUCE==true)
-    Serial.println("ON");
+    myprintln("ON");
   else
-    Serial.println("OFF");
+    myprintln("OFF");
 }
 
 void loop()
 {
-  
+  /*
   //Lettura Pulsante Manuale
   read_BUTTON();
   //Lettura abilitazione Fotoresistenza
   presenzaLUCE=letturaLUCE();
   //statoSCALA();
   letturaPir();
+  */
   /*
    for (int x=64;x<200;x=x+10)
       cambia_striscia(0, NUM_LEDS,0, x, GREEN);
    cambia_striscia(0, NUM_LEDS,0, 100, BLACK);
   */ 
-  /*//Lettura Bluetooth
+  //Lettura Bluetooth
   BLUETOOTH_READ();
   if (BLUETOOTH_BUFFER != "")
-    BLUETOOTH_COMMAND();*/
+    BLUETOOTH_COMMAND();
   delay(200);
 }
 
@@ -209,42 +239,65 @@ void BLUETOOTH_READ(){
   while (bluetooth.available())
     BLUETOOTH_BUFFER += (char)bluetooth.read();
   if (!bluetooth.available() && BLUETOOTH_BUFFER != ""){
-    Serial.print("RX: ");
-    Serial.println(BLUETOOTH_BUFFER);
+    myprintln("RX: " + BLUETOOTH_BUFFER);
     bluetooth.println("chk_"+BLUETOOTH_BUFFER);
   }
 }
 
 void BLUETOOTH_COMMAND()
 {
-  if (BLUETOOTH_BUFFER.substring(0, 4) == "set ")
-    SET_TEMPO_COLORE(BLUETOOTH_BUFFER.substring(4, BLUETOOTH_BUFFER.length()));
+  if (BLUETOOTH_BUFFER.substring(0, 4) == "setT")
+    SET_TEMPI(BLUETOOTH_BUFFER.substring(4, BLUETOOTH_BUFFER.length()));
+  if (BLUETOOTH_BUFFER.substring(0, 4) == "setC")
+    SET_COLLUM(BLUETOOTH_BUFFER.substring(4, BLUETOOTH_BUFFER.length()));
   if (BLUETOOTH_BUFFER.substring(0, 4) == "foto")
     SET_FOTO(BLUETOOTH_BUFFER.substring(4, BLUETOOTH_BUFFER.length()));
   if (BLUETOOTH_BUFFER.substring(0, 4) == "btn ")
-    colori_movimento[4]=getColor(BLUETOOTH_BUFFER.substring(4, BLUETOOTH_BUFFER.length()));
+    colori[4]=getColor(BLUETOOTH_BUFFER.substring(4, BLUETOOTH_BUFFER.length()));
   BLUETOOTH_BUFFER = "";
 }
 
-void SET_TEMPO_COLORE(String s)
+
+void SET_TEMPI(String s)
 {
-  String direzione = s.substring(4,s.indexOf("COL:"));
-  String colore = s.substring(s.indexOf("COL:")+4,s.indexOf("TEMPO:"));
-  String tempo = s.substring(s.indexOf("TEMPO:")+6,s.length());
-  if (direzione == "SU" && colore != "BLK")
+  String direzione = s.substring(0,s.indexOf("ON:"));
+  myprintln(direzione);
+  String tON = s.substring(s.indexOf("ON:")+3,s.indexOf("OFF:"));
+  String tOFF = s.substring(s.indexOf("OFF:")+4,s.length());
+  if (direzione == "SU" )
   {
-    tempi[0] = tempo.toInt();
-    colori_movimento[0] = getColor(colore);
+    tempi[0] = tON.toInt();
+    tempi[1] = tOFF.toInt();
+    myprint("Tempo Salita ON:");
+    myprintln((String)tempi[0]);
+    myprint("Tempo Salita OFF:");
+    myprintln((String)tempi[1]);
   }
-  if (direzione == "GIU" && colore != "BLK")
+  else if (direzione == "GIU" )
   {
-    tempi[2] = tempo.toInt();
-    colori_movimento[2] = getColor(colore);
+    tempi[2] = tON.toInt();
+    tempi[3] = tOFF.toInt();
+    myprint("Tempo Discesa ON:");
+    myprintln((String)tempi[2]);
+    myprint("Tempo Discesa OFF:");
+    myprintln((String)tempi[3]);
   }
-  if (direzione == "SU" && colore == "BLK")
-    tempi[1] = tempo.toInt();
-  if (direzione == "GIU" && colore == "BLK")
-    tempi[3] = tempo.toInt();
+}
+
+void SET_COLLUM(String s)
+{
+  String colore = s.substring(0,s.indexOf("LUM:"));
+  String livello = s.substring(s.indexOf("LUM:")+4,s.length());
+  myprintln("Colore:" + colore);
+  myprintln("Livello:" + livello);
+  for(int i=0;i<6;i++)
+    myprintln((String) colori[i]);
+  colori[0]=getColor(colore);
+  colori[2]=getColor(colore);
+  colori[4]=getColor(colore);
+  myprintln("LIVELLI");
+  for(int i=0;i<6;i++)
+    livelli[i]=livello.toInt();
 }
 
 void SET_FOTO(String s)
@@ -261,9 +314,9 @@ uint32_t getColor(String nome)
   boolean trovato = false;
   for(uint8_t i=0;i<NUM_COL and trovato == false;i++)
   {
-    if (colori[i].nome == nome)
+    if (lista_colori[i].nome == nome)
     {
-      valore = colori[i].valore;
+      valore = lista_colori[i].valore;
       trovato = true;
     }
   }
