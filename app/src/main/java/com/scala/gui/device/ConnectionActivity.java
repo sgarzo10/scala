@@ -76,8 +76,6 @@ public class ConnectionActivity extends AppCompatActivity {
         scalaGiu.setOnClickListener(ascoltatore);
         luminosita.setOnClickListener(ascoltatore);
         seriale.setOnClickListener(ascoltatore);
-        scalaSu.setAlpha(0.5f);
-        scalaGiu.setAlpha(1f);
     }
 
     @Override
@@ -96,12 +94,15 @@ public class ConnectionActivity extends AppCompatActivity {
                 output.setText(R.string.error);
         }
         bluetooth.invia("getTGIU");
+        scalaSu.setAlpha(0.5f);
+        scalaGiu.setAlpha(1f);
         String tempi="";
         while (Objects.equals(tempi, ""))
             tempi = bluetooth.ricevi();
         tempi = tempi.replace("tONd","");
         tempo_ON.setText(tempi.split("tOFFd")[0]);
         tempo_OFF.setText(tempi.split("tOFFd")[1]);
+        ascoltatore.setDirezione("GIU");
         bluetooth.invia("getC");
         String collum="";
         while (Objects.equals(tempi, ""))

@@ -14,13 +14,14 @@ class AscoltatoreConnectionActivity implements View.OnClickListener {
     private String colore;
 
     void setLuce(String luce) { this.luce = luce; }
+    void setDirezione(String direzione) { this.direzione = direzione; }
     void setColore(String colore) {
         this.colore = colore;
         checkRadio();
     }
 
     AscoltatoreConnectionActivity(final ConnectionActivity app) {
-        direzione = "GIU";
+        direzione = "";
         luce = "";
         colore = "";
         this.app = app;
