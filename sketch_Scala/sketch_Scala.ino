@@ -7,8 +7,8 @@
 #include "FastLED.h"
 #include <SoftwareSerial.h>
 
-#define NUM_LEDS 40  //n. led nella striscia CRI = 100
-#define NUM_COL 8  //n. led nella striscia CRI = 100
+#define NUM_LEDS 8  //n. led nella striscia CRI = 8
+#define NUM_COL 8    //n. colori 
 #define DATA_PIN 9   //uscita per collegamento striscia led
 #define PIR_BASSO 2  //PIR Piano Terra
 #define PIR_ALTO 4   //PIR Primo Piano
@@ -213,19 +213,12 @@ void statoSCALA()
 
 void loop()
 {
-  /*
   //Lettura Pulsante Manuale
   read_BUTTON();
   //Lettura abilitazione Fotoresistenza
   presenzaLUCE=letturaLUCE();
   //statoSCALA();
   letturaPir();
-  */
-  /*
-   for (int x=64;x<200;x=x+10)
-      cambia_striscia(0, NUM_LEDS,0, x, GREEN);
-   cambia_striscia(0, NUM_LEDS,0, 100, BLACK);
-  */ 
   //Lettura Bluetooth
   BLUETOOTH_READ();
   if (BLUETOOTH_BUFFER != "")
@@ -257,6 +250,10 @@ void BLUETOOTH_COMMAND()
     SET_FOTO(BLUETOOTH_BUFFER.substring(4, BLUETOOTH_BUFFER.length()));
   if (BLUETOOTH_BUFFER.substring(0, 4) == "getF")
     bluetooth.println(usaFOTO);
+  if (BLUETOOTH_BUFFER.substring(0, 4) == "com1")
+    COMBO_1();
+  if (BLUETOOTH_BUFFER.substring(0, 4) == "com2")
+    COMBO_2();
   BLUETOOTH_BUFFER = "";
 }
 
@@ -342,4 +339,34 @@ String getNome(uint32_t valore)
     }
   }
   return nome;
+}
+
+void COMBO_1()
+{
+  cambia_striscia(0, NUM_LEDS, 0, 100, lista_colori[0].valore);
+  uint32_t colore = 0xFFFFFF;
+  uint16_t decremento = colore / NUM_LEDS;
+  for(int16_t i=0; i<NUM_LEDS;i++)
+  {
+    cambia_led(i, 140, colore);
+    colore = colore - decremento;
+  }
+  delay(300);
+  cambia_striscia(0, NUM_LEDS, 0, 100, lista_colori[0].valore);
+}
+
+void COMBO_2()
+{
+  cambia_striscia(0, NUM_LEDS, 0, 100, lista_colori[0].valore);
+  for(int16_t i=0; i < (NUM_LEDS / 2);i++)
+  {
+    cambia_led(i, 140, 0x00FFFF);
+    cambia_led(NUM_LEDS-i, 140, 0x00FFFF);
+  }
+  for(int16_t i=0; i < (NUM_LEDS / 2);i++)
+  {
+    cambia_led((NUM_LEDS / 2)+i, 140, 0xFFFF00);
+    cambia_led((NUM_LEDS / 2)-i, 140, 0xFFFF00);
+  }
+  cambia_striscia(0, NUM_LEDS, 0, 100, lista_colori[0].valore);
 }

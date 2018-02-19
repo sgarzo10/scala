@@ -75,6 +75,30 @@ class AscoltatoreConnectionActivity implements View.OnClickListener, SeekBar.OnS
                 }
                 break;
 
+            case R.id.bt_combo1:
+                if (!app.getBluetooth().invia("com1"))
+                    app.getOutput().setText(R.string.error);
+                else {
+                    String mex = "";
+                    while (Objects.equals(mex, ""))
+                        mex = app.getBluetooth().ricevi();
+                    mex = "RX: " + mex;
+                    app.getOutput().setText(mex);
+                }
+                break;
+
+            case R.id.bt_combo2:
+                if (!app.getBluetooth().invia("com2"))
+                    app.getOutput().setText(R.string.error);
+                else {
+                    String mex = "";
+                    while (Objects.equals(mex, ""))
+                        mex = app.getBluetooth().ricevi();
+                    mex = "RX: " + mex;
+                    app.getOutput().setText(mex);
+                }
+                break;
+
             case R.id.salita:
                 direzione = "SU";
                 app.getScalaGiu().setAlpha(0.5f);

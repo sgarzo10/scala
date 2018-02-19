@@ -59,6 +59,8 @@ public class ConnectionActivity extends AppCompatActivity {
         Button bt_setTEMPO = (Button) findViewById(R.id.bt_setTEMPO );
         Button bt_setCOLLUM = (Button) findViewById(R.id.bt_setCOLLUM );
         Button bt_setFOTO = (Button) findViewById(R.id.bt_setFOTO );
+        Button bt_combo1 = (Button) findViewById(R.id.bt_combo1 );
+        Button bt_combo2 = (Button) findViewById(R.id.bt_combo2 );
         Button seriale = (Button) findViewById(R.id.seriale);
         radio.add((RadioButton) findViewById(R.id.radio_WHITE));
         radio.add((RadioButton) findViewById(R.id.radio_GREEN));
@@ -76,6 +78,8 @@ public class ConnectionActivity extends AppCompatActivity {
         bt_setTEMPO.setOnClickListener(ascoltatore);
         bt_setCOLLUM.setOnClickListener(ascoltatore);
         bt_setFOTO.setOnClickListener(ascoltatore);
+        bt_combo1.setOnClickListener(ascoltatore);
+        bt_combo2.setOnClickListener(ascoltatore);
         for(int i=0;i<radio.size();i++)
             radio.get(i).setOnClickListener(ascoltatore);
         scalaSu.setOnClickListener(ascoltatore);

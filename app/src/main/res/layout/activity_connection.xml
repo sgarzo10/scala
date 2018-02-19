@@ -197,29 +197,22 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/bt_setFOTO" />
 
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginBottom="12dp"
-            android:layout_alignParentEnd="true">
-
             <LinearLayout
                 android:orientation="horizontal"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/output"
-                    android:layout_width="357dp"
+                <Button
+                    android:id="@+id/bt_combo1"
+                    android:layout_width="173dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignStart="@+id/tempo"
-                    android:layout_marginBottom="0dp"
-                    android:text="OUTPUT" />
+                    android:text="COMBO1" />
+
+                <Button
+                    android:id="@+id/bt_combo2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="COMBO2" />
 
             </LinearLayout>
 
@@ -229,10 +222,23 @@
             android:id="@+id/seriale"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tempo"
-            android:layout_marginTop="0dp"
-            android:layout_toStartOf="@+id/configura"
             android:text="MONITOR SERIALE" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/output"
+                android:layout_width="357dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignStart="@+id/tempo"
+                android:layout_marginBottom="0dp"
+                android:text="OUTPUT" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
