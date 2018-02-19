@@ -3,9 +3,7 @@ package com.scala.gui.device;
 import android.content.Intent;
 import android.view.View;
 import android.widget.SeekBar;
-
 import com.scala.R;
-
 import java.util.Objects;
 
 class AscoltatoreConnectionActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
@@ -36,12 +34,16 @@ class AscoltatoreConnectionActivity implements View.OnClickListener, SeekBar.OnS
                 String conf_tempi = "setT" + direzione + "ON:" + app.getTempo_ON().getText().toString()+ "OFF:" + app.getTempo_OFF().getText().toString();
                 if (!app.getBluetooth().invia(conf_tempi))
                     app.getOutput().setText(R.string.error);
+                else
+                    app.getOutput().setText(app.getBluetooth().ricevi());
                 break;
 
             case R.id.bt_setCOLLUM:
                 String conf_collum = "setC" + colore + "LUM:" + luce;
                 if (!app.getBluetooth().invia(conf_collum))
                     app.getOutput().setText(R.string.error);
+                else
+                    app.getOutput().setText(app.getBluetooth().ricevi());
                 break;
 
             case R.id.bt_setFOTO:
@@ -52,16 +54,22 @@ class AscoltatoreConnectionActivity implements View.OnClickListener, SeekBar.OnS
                     conf_foto = conf_foto + "OFF";
                 if (!app.getBluetooth().invia(conf_foto))
                     app.getOutput().setText(R.string.error);
+                else
+                    app.getOutput().setText(app.getBluetooth().ricevi());
                 break;
 
             case R.id.bt_combo1:
                 if (!app.getBluetooth().invia("com1"))
                     app.getOutput().setText(R.string.error);
+                else
+                    app.getOutput().setText(app.getBluetooth().ricevi());
                 break;
 
             case R.id.bt_combo2:
                 if (!app.getBluetooth().invia("com2"))
                     app.getOutput().setText(R.string.error);
+                else
+                    app.getOutput().setText(app.getBluetooth().ricevi());
                 break;
 
             case R.id.salita:

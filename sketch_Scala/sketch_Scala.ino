@@ -7,7 +7,7 @@
 #include "FastLED.h"
 #include <SoftwareSerial.h>
 
-#define NUM_LEDS 40  //n. led nella striscia CRI = 8
+#define NUM_LEDS 40  //n. led nella striscia CRI = 7
 #define NUM_COL 8    //n. colori 
 #define DATA_PIN 9   //uscita per collegamento striscia led
 #define PIR_BASSO 2  //PIR Piano Terra
