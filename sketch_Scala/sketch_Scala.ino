@@ -253,10 +253,10 @@ void BLUETOOTH_COMMAND()
     SET_COLLUM(BLUETOOTH_BUFFER.substring(4, BLUETOOTH_BUFFER.length()));
   if (BLUETOOTH_BUFFER.substring(0, 4) == "getC")
     bluetooth.println("COL:"+getNome(colori[0])+"LUM:"+livelli[0]);
-  if (BLUETOOTH_BUFFER.substring(0, 4) == "foto")
+  if (BLUETOOTH_BUFFER.substring(0, 4) == "setF")
     SET_FOTO(BLUETOOTH_BUFFER.substring(4, BLUETOOTH_BUFFER.length()));
-  if (BLUETOOTH_BUFFER.substring(0, 4) == "btn ")
-    colori[4]=getColor(BLUETOOTH_BUFFER.substring(4, BLUETOOTH_BUFFER.length()));
+  if (BLUETOOTH_BUFFER.substring(0, 4) == "getF")
+    bluetooth.println(usaFOTO);
   BLUETOOTH_BUFFER = "";
 }
 

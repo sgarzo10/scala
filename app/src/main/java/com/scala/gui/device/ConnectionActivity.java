@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import com.scala.R;
 import com.scala.bluetooth.BluetoothConnection;
@@ -21,6 +22,7 @@ public class ConnectionActivity extends AppCompatActivity {
     private AscoltatoreConnectionActivity ascoltatore;
     private ImageButton scalaSu;
     private ImageButton scalaGiu;
+    private Switch fotoresistenza;
     private SeekBar luminosita;
     private EditText tempo_OFF;
     private EditText tempo_ON;
@@ -37,7 +39,7 @@ public class ConnectionActivity extends AppCompatActivity {
     EditText getTempo_OFF() {return tempo_OFF; }
     ImageButton getScalaSu() { return scalaSu; }
     ImageButton getScalaGiu() { return scalaGiu; }
-    SeekBar getLuminosita() { return luminosita; }
+    Switch getFotoresistenza() { return fotoresistenza;}
     ArrayList<RadioButton> getRadio() {return radio;}
     String getNome() { return nome;}
     String getMac() { return mac;}
@@ -53,13 +55,16 @@ public class ConnectionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connection);
         ascoltatore = new AscoltatoreConnectionActivity(this);
+        radio = new ArrayList<>();
         Button bt_setTEMPO = (Button) findViewById(R.id.bt_setTEMPO );
         Button bt_setCOLLUM = (Button) findViewById(R.id.bt_setCOLLUM );
+        Button bt_setFOTO = (Button) findViewById(R.id.bt_setFOTO );
         Button seriale = (Button) findViewById(R.id.seriale);
         radio.add((RadioButton) findViewById(R.id.radio_WHITE));
         radio.add((RadioButton) findViewById(R.id.radio_GREEN));
         radio.add((RadioButton) findViewById(R.id.radio_BLUE));
         radio.add((RadioButton) findViewById(R.id.radio_RED));
+        fotoresistenza = (Switch) findViewById(R.id.switchFoto);
         luminosita = (SeekBar) findViewById(R.id.bar_Luminosita);
         scalaSu = (ImageButton) findViewById(R.id.salita);
         scalaGiu = (ImageButton) findViewById(R.id.discesa);
@@ -70,17 +75,20 @@ public class ConnectionActivity extends AppCompatActivity {
         mac = getIntent().getExtras().getString("mac");
         bt_setTEMPO.setOnClickListener(ascoltatore);
         bt_setCOLLUM.setOnClickListener(ascoltatore);
+        bt_setFOTO.setOnClickListener(ascoltatore);
         for(int i=0;i<radio.size();i++)
             radio.get(i).setOnClickListener(ascoltatore);
         scalaSu.setOnClickListener(ascoltatore);
         scalaGiu.setOnClickListener(ascoltatore);
         luminosita.setOnClickListener(ascoltatore);
         seriale.setOnClickListener(ascoltatore);
+        luminosita.setOnSeekBarChangeListener(ascoltatore);
     }
 
     @Override
     protected void onResume()
     {
+        String tempi="", collum="", foto="";
         Log.i("CONNECTION_ACTIVITY","onResume");
         super.onResume();
         bluetooth = new BluetoothConnection();
@@ -94,23 +102,28 @@ public class ConnectionActivity extends AppCompatActivity {
                 output.setText(R.string.error);
         }
         bluetooth.invia("getTGIU");
-        scalaSu.setAlpha(0.5f);
-        scalaGiu.setAlpha(1f);
-        String tempi="";
         while (Objects.equals(tempi, ""))
             tempi = bluetooth.ricevi();
         tempi = tempi.replace("tONd","");
+        ascoltatore.setDirezione("GIU");
         tempo_ON.setText(tempi.split("tOFFd")[0]);
         tempo_OFF.setText(tempi.split("tOFFd")[1]);
-        ascoltatore.setDirezione("GIU");
+        scalaSu.setAlpha(0.5f);
+        scalaGiu.setAlpha(1f);
         bluetooth.invia("getC");
-        String collum="";
         while (Objects.equals(tempi, ""))
             collum = bluetooth.ricevi();
         collum = collum.replace("COL:","");
-        ascoltatore.setColore(collum.split("LUM:")[0]);
         luminosita.setProgress((Integer.parseInt(collum.split("LUM:")[1]) - 65) / 20);
+        ascoltatore.setColore(collum.split("LUM:")[0]);
         ascoltatore.setLuce(collum.split("LUM:")[1]);
+        bluetooth.invia("getF");
+        while (Objects.equals(tempi, ""))
+            foto = bluetooth.ricevi();
+        if (Objects.equals(foto, "1"))
+            fotoresistenza.setChecked(true);
+        else
+            fotoresistenza.setChecked(false);
     }
 
     @Override

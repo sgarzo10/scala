@@ -2,11 +2,13 @@ package com.scala.gui.device;
 
 import android.content.Intent;
 import android.view.View;
+import android.widget.SeekBar;
+
 import com.scala.R;
 
 import java.util.Objects;
 
-class AscoltatoreConnectionActivity implements View.OnClickListener {
+class AscoltatoreConnectionActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
 
     private ConnectionActivity app;
     private String direzione;
@@ -52,6 +54,23 @@ class AscoltatoreConnectionActivity implements View.OnClickListener {
                     while(Objects.equals(mex, ""))
                         mex = app.getBluetooth().ricevi();
                     mex = "RX: "+mex;
+                    app.getOutput().setText(mex);
+                }
+                break;
+
+            case R.id.bt_setFOTO:
+                String conf_foto = "setF";
+                if (app.getFotoresistenza().isChecked())
+                    conf_foto = conf_foto + "ON";
+                else
+                    conf_foto = conf_foto + "OFF";
+                if (!app.getBluetooth().invia(conf_foto))
+                    app.getOutput().setText(R.string.error);
+                else {
+                    String mex = "";
+                    while (Objects.equals(mex, ""))
+                        mex = app.getBluetooth().ricevi();
+                    mex = "RX: " + mex;
                     app.getOutput().setText(mex);
                 }
                 break;
@@ -102,10 +121,6 @@ class AscoltatoreConnectionActivity implements View.OnClickListener {
                 checkRadio();
                 break;
 
-            case R.id.bar_Luminosita :
-                //luce = Integer.toString(app.getLuminosita().getProgress()*20 + 65 );
-                break;
-
             case R.id.seriale:
                 Intent openSeriale = new Intent(app,SerialActivity.class);
                 openSeriale.putExtra("nome",  app.getNome());
@@ -113,6 +128,21 @@ class AscoltatoreConnectionActivity implements View.OnClickListener {
                 app.startActivity(openSeriale);
                 break;
         }
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
+        luce = Integer.toString(value*20 + 65 );
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
     }
 
     private void checkRadio()
