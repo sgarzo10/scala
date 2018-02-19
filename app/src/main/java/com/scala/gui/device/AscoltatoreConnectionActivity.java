@@ -1,10 +1,10 @@
 package com.scala.gui.device;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import com.scala.R;
-import java.util.Date;
+
+import java.util.Objects;
 
 class AscoltatoreConnectionActivity implements View.OnClickListener {
 
@@ -13,9 +13,15 @@ class AscoltatoreConnectionActivity implements View.OnClickListener {
     private String luce;
     private String colore;
 
+    void setLuce(String luce) { this.luce = luce; }
+    void setColore(String colore) {
+        this.colore = colore;
+        checkRadio();
+    }
+
     AscoltatoreConnectionActivity(final ConnectionActivity app) {
         direzione = "GIU";
-        luce = "140";
+        luce = "";
         colore = "";
         this.app = app;
     }
@@ -28,7 +34,10 @@ class AscoltatoreConnectionActivity implements View.OnClickListener {
                 if (!app.getBluetooth().invia(conf_tempi))
                     app.getOutput().setText(R.string.error);
                 else {
-                    String mex = "RX: "+app.getBluetooth().ricevi();
+                    String mex="";
+                    while(Objects.equals(mex, ""))
+                        mex = app.getBluetooth().ricevi();
+                    mex = "RX: "+mex;
                     app.getOutput().setText(mex);
                 }
                 break;
@@ -38,7 +47,10 @@ class AscoltatoreConnectionActivity implements View.OnClickListener {
                 if (!app.getBluetooth().invia(conf_collum))
                     app.getOutput().setText(R.string.error);
                 else {
-                    String mex = "RX: "+app.getBluetooth().ricevi();
+                    String mex="";
+                    while(Objects.equals(mex, ""))
+                        mex = app.getBluetooth().ricevi();
+                    mex = "RX: "+mex;
                     app.getOutput().setText(mex);
                 }
                 break;
@@ -47,43 +59,46 @@ class AscoltatoreConnectionActivity implements View.OnClickListener {
                 direzione = "SU";
                 app.getScalaGiu().setAlpha(0.5f);
                 app.getScalaSu().setAlpha(1f);
+                app.getBluetooth().invia("getTSU");
+                String tempi = "";
+                while (Objects.equals(tempi, ""))
+                    tempi = app.getBluetooth().ricevi();
+                tempi = tempi.replace("tONs","");
+                app.getTempo_ON().setText(tempi.split("tOFFs")[0]);
+                app.getTempo_OFF().setText(tempi.split("tOFFs")[1]);
                 break;
+
             case R.id.discesa:
                 direzione = "GIU";
                 app.getScalaSu().setAlpha(0.5f);//  BUTTON 0 INVISIBLE 1 VISIBLE  BACKGROUND  0 INVISIBLE 255 VISIBLE
                 app.getScalaGiu().setAlpha(1f);
+                app.getBluetooth().invia("getTGIU");
+                tempi = "";
+                while (Objects.equals(tempi, ""))
+                    tempi = app.getBluetooth().ricevi();
+                tempi = tempi.replace("tONd","");
+                app.getTempo_ON().setText(tempi.split("tOFFd")[0]);
+                app.getTempo_OFF().setText(tempi.split("tOFFd")[1]);
                 break;
 
             case R.id.radio_WHITE :
                 colore = "WHT";
-                app.getRadioWHITE().setChecked(true);
-                app.getRadioGREEN().setChecked(false);
-                app.getRadioBLUE().setChecked(false);
-                app.getRadioRED().setChecked(false);
+                checkRadio();
                 break;
 
             case R.id.radio_GREEN :
                 colore = "GRN";
-                app.getRadioWHITE().setChecked(false);
-                app.getRadioGREEN().setChecked(true);
-                app.getRadioBLUE().setChecked(false);
-                app.getRadioRED().setChecked(false);
+                checkRadio();
                 break;
 
             case R.id.radio_BLUE :
                 colore = "BLU";
-                app.getRadioWHITE().setChecked(false);
-                app.getRadioGREEN().setChecked(false);
-                app.getRadioBLUE().setChecked(true);
-                app.getRadioRED().setChecked(false);
+                checkRadio();
                 break;
 
             case R.id.radio_RED :
                 colore = "RED";
-                app.getRadioWHITE().setChecked(false);
-                app.getRadioGREEN().setChecked(false);
-                app.getRadioBLUE().setChecked(false);
-                app.getRadioRED().setChecked(true);
+                checkRadio();
                 break;
 
             case R.id.bar_Luminosita :
@@ -96,13 +111,17 @@ class AscoltatoreConnectionActivity implements View.OnClickListener {
                 openSeriale.putExtra("mac", app.getMac());
                 app.startActivity(openSeriale);
                 break;
+        }
+    }
 
-            case R.id.setData:
-                Log.i("case","setData");
-                if (!app.getBluetooth().invia("data" + new Date().toString()))
-                    app.getOutput().setText(R.string.error);
-                break;
-
+    private void checkRadio()
+    {
+        for(int i=0;i<app.getRadio().size();i++)
+        {
+            if (app.getRadio().get(i).getContentDescription() == colore)
+                app.getRadio().get(i).setChecked(true);
+            else
+                app.getRadio().get(i).setChecked(false);
         }
     }
 }

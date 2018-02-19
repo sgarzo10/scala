@@ -48,7 +48,7 @@ boolean mov_discesa=false;
 */
 uint16_t tempi[6] = {100, 100, 100, 100, 0, 0};
 uint32_t colori[6] = {0xFFFFFF, 0x000000, 0xFFFFFF, 0x000000, 0xFFFFFF, 0x000000};
-uint8_t livelli[6] = {140, 140, 140, 140, 140, 140};
+uint8_t livelli[6] = {145, 145, 145, 145, 145, 145};
 
 
 //Variabili per gestione Fotoresistenza
@@ -64,8 +64,7 @@ void setup()
 {  
   pinMode(FOTO_PIN, INPUT);   //Imposto PIN FOTORESISTENZA  
   Serial.begin (9600);   //Inizializzo Seriale
-  myprintln ("SCALA START");
-  myprintln("------------------------------------------");
+  myprintln ("---------------------- SCALA START ----------------------------");
   FastLED.addLeds<WS2811, DATA_PIN, BRG>(leds, NUM_LEDS);   //Inizializzo Array di LED
   bluetooth.begin(9600);  //Inizializzo COM Bluetooth
   lista_colori[0] = {"BLK", 0x000000}; //BLACK
@@ -248,8 +247,12 @@ void BLUETOOTH_COMMAND()
 {
   if (BLUETOOTH_BUFFER.substring(0, 4) == "setT")
     SET_TEMPI(BLUETOOTH_BUFFER.substring(4, BLUETOOTH_BUFFER.length()));
+  if (BLUETOOTH_BUFFER.substring(0, 4) == "getT")
+    GET_TEMPI(BLUETOOTH_BUFFER.substring(4, BLUETOOTH_BUFFER.length()));
   if (BLUETOOTH_BUFFER.substring(0, 4) == "setC")
     SET_COLLUM(BLUETOOTH_BUFFER.substring(4, BLUETOOTH_BUFFER.length()));
+  if (BLUETOOTH_BUFFER.substring(0, 4) == "getC")
+    bluetooth.println("COL:"+getNome(colori[0])+"LUM:"+livelli[0]);
   if (BLUETOOTH_BUFFER.substring(0, 4) == "foto")
     SET_FOTO(BLUETOOTH_BUFFER.substring(4, BLUETOOTH_BUFFER.length()));
   if (BLUETOOTH_BUFFER.substring(0, 4) == "btn ")
@@ -257,6 +260,14 @@ void BLUETOOTH_COMMAND()
   BLUETOOTH_BUFFER = "";
 }
 
+void GET_TEMPI(String s)
+{
+  String direzione = s.substring(0,s.length());
+  if (direzione == "SU")
+    bluetooth.println("tONs"+String(tempi[0])+"tOFFs"+String(tempi[1]));
+  if (direzione == "GIU")
+    bluetooth.println("tONd"+String(tempi[2])+"tOFFd"+String(tempi[3]));
+}
 
 void SET_TEMPI(String s)
 {
@@ -273,7 +284,7 @@ void SET_TEMPI(String s)
     myprint("Tempo Salita OFF:");
     myprintln((String)tempi[1]);
   }
-  else if (direzione == "GIU" )
+  if (direzione == "GIU" )
   {
     tempi[2] = tON.toInt();
     tempi[3] = tOFF.toInt();
@@ -288,14 +299,9 @@ void SET_COLLUM(String s)
 {
   String colore = s.substring(0,s.indexOf("LUM:"));
   String livello = s.substring(s.indexOf("LUM:")+4,s.length());
-  myprintln("Colore:" + colore);
-  myprintln("Livello:" + livello);
-  for(int i=0;i<6;i++)
-    myprintln((String) colori[i]);
   colori[0]=getColor(colore);
   colori[2]=getColor(colore);
   colori[4]=getColor(colore);
-  myprintln("LIVELLI");
   for(int i=0;i<6;i++)
     livelli[i]=livello.toInt();
 }
@@ -321,4 +327,19 @@ uint32_t getColor(String nome)
     }
   }
   return valore;
+}
+
+String getNome(uint32_t valore)
+{
+  String nome = "WHT";
+  boolean trovato = false;
+  for(uint8_t i=0;i<NUM_COL and trovato == false;i++)
+  {
+    if (lista_colori[i].valore == valore)
+    {
+      nome = lista_colori[i].nome;
+      trovato = true;
+    }
+  }
+  return nome;
 }

@@ -1,17 +1,20 @@
 void SET_TEMPO_COLORE(String s)
 {
   String direzione = s.substring(4,s.indexOf("COL:"));
-  String colore = s.substring(s.indexOf("COL:")+4,s.indexOf("TEMPO:"));
+  String colore = s.substring(s.indexOf("COL:")+4,s.indexOf("LIV:"));
+  String livello = s.substring(s.indexOf("LIV:")+4,s.indexOf("TEMPO:"));
   String tempo = s.substring(s.indexOf("TEMPO:")+6,s.length());
   if (direzione == "SU" && colore != "BLK")
   {
     tempi[0] = tempo.toInt();
     colori_movimento[0] = getColor(colore);
+	livelli[0] = livello.toInt();
   }
   if (direzione == "GIU" && colore != "BLK")
   {
     tempi[2] = tempo.toInt();
     colori_movimento[2] = getColor(colore);
+	livelli[2] = livello.toInt();
   }
   if (direzione == "SU" && colore == "BLK")
     tempi[1] = tempo.toInt();

@@ -123,29 +123,33 @@
                     android:textSize="18sp" />
 
                 <RadioButton
-                    android:text="GREEN"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/radio_GREEN"
-                    android:checked="false" />
-
-                <RadioButton
-                    android:text="BLUE"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/radio_BLUE" />
+                    android:checked="false"
+                    android:contentDescription="GRN"
+                    android:text="GREEN" />
 
                 <RadioButton
-                    android:text="WHITE"
+                    android:id="@+id/radio_BLUE"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/radio_WHITE" />
+                    android:contentDescription="BLU"
+                    android:text="BLUE" />
 
                 <RadioButton
-                    android:text="RED"
+                    android:id="@+id/radio_WHITE"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="WHT"
+                    android:text="WHITE" />
+
+                <RadioButton
+                    android:id="@+id/radio_RED"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/radio_RED" />
+                    android:contentDescription="RED"
+                    android:text="RED" />
 
             </LinearLayout>
 
@@ -162,13 +166,13 @@
                     android:textSize="18sp" />
 
                 <SeekBar
+                    android:id="@+id/bar_Luminosita"
                     style="@style/Widget.AppCompat.SeekBar.Discrete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="0.24"
                     android:max="9"
-                    android:progress="4"
-                    android:id="@+id/bar_Luminosita"
-                    android:layout_weight="0.24" />
+                    android:progress="0" />
 
             </LinearLayout>
 

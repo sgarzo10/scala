@@ -12,19 +12,20 @@ import android.widget.TextView;
 import com.scala.R;
 import com.scala.bluetooth.BluetoothConnection;
 
+import java.util.ArrayList;
+import java.util.Objects;
+
 public class ConnectionActivity extends AppCompatActivity {
 
     private BluetoothConnection bluetooth;
+    private AscoltatoreConnectionActivity ascoltatore;
     private ImageButton scalaSu;
     private ImageButton scalaGiu;
     private SeekBar luminosita;
     private EditText tempo_OFF;
     private EditText tempo_ON;
     private TextView output;
-    private RadioButton radio_WHITE;
-    private RadioButton radio_GREEN;
-    private RadioButton radio_BLUE;
-    private RadioButton radio_RED;
+    private ArrayList<RadioButton> radio;
     private String nome;
     private String mac;
 
@@ -37,10 +38,7 @@ public class ConnectionActivity extends AppCompatActivity {
     ImageButton getScalaSu() { return scalaSu; }
     ImageButton getScalaGiu() { return scalaGiu; }
     SeekBar getLuminosita() { return luminosita; }
-    RadioButton getRadioWHITE() {return radio_WHITE;}
-    RadioButton getRadioGREEN() {return radio_GREEN;}
-    RadioButton getRadioBLUE() {return radio_BLUE;}
-    RadioButton getRadioRED() {return radio_RED;}
+    ArrayList<RadioButton> getRadio() {return radio;}
     String getNome() { return nome;}
     String getMac() { return mac;}
 
@@ -54,15 +52,14 @@ public class ConnectionActivity extends AppCompatActivity {
         Log.i("CONNECTION_ACTIVITY","onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connection);
-        AscoltatoreConnectionActivity ascoltatore = new AscoltatoreConnectionActivity(this);
-        Button setData = (Button) findViewById(R.id.setData);
+        ascoltatore = new AscoltatoreConnectionActivity(this);
         Button bt_setTEMPO = (Button) findViewById(R.id.bt_setTEMPO );
         Button bt_setCOLLUM = (Button) findViewById(R.id.bt_setCOLLUM );
         Button seriale = (Button) findViewById(R.id.seriale);
-        radio_WHITE = (RadioButton) findViewById(R.id.radio_WHITE);
-        radio_GREEN = (RadioButton) findViewById(R.id.radio_GREEN);
-        radio_BLUE = (RadioButton) findViewById(R.id.radio_BLUE);
-        radio_RED = (RadioButton) findViewById(R.id.radio_RED);
+        radio.add((RadioButton) findViewById(R.id.radio_WHITE));
+        radio.add((RadioButton) findViewById(R.id.radio_GREEN));
+        radio.add((RadioButton) findViewById(R.id.radio_BLUE));
+        radio.add((RadioButton) findViewById(R.id.radio_RED));
         luminosita = (SeekBar) findViewById(R.id.bar_Luminosita);
         scalaSu = (ImageButton) findViewById(R.id.salita);
         scalaGiu = (ImageButton) findViewById(R.id.discesa);
@@ -71,13 +68,10 @@ public class ConnectionActivity extends AppCompatActivity {
         output = (TextView) findViewById(R.id.output);
         nome = getIntent().getExtras().getString("nome");
         mac = getIntent().getExtras().getString("mac");
-        setData.setOnClickListener(ascoltatore);
         bt_setTEMPO.setOnClickListener(ascoltatore);
         bt_setCOLLUM.setOnClickListener(ascoltatore);
-        radio_WHITE.setOnClickListener(ascoltatore);
-        radio_GREEN.setOnClickListener(ascoltatore);
-        radio_BLUE.setOnClickListener(ascoltatore);
-        radio_RED.setOnClickListener(ascoltatore);
+        for(int i=0;i<radio.size();i++)
+            radio.get(i).setOnClickListener(ascoltatore);
         scalaSu.setOnClickListener(ascoltatore);
         scalaGiu.setOnClickListener(ascoltatore);
         luminosita.setOnClickListener(ascoltatore);
@@ -101,6 +95,21 @@ public class ConnectionActivity extends AppCompatActivity {
             } else
                 output.setText(R.string.error);
         }
+        bluetooth.invia("getTGIU");
+        String tempi="";
+        while (Objects.equals(tempi, ""))
+            tempi = bluetooth.ricevi();
+        tempi = tempi.replace("tONd","");
+        tempo_ON.setText(tempi.split("tOFFd")[0]);
+        tempo_OFF.setText(tempi.split("tOFFd")[1]);
+        bluetooth.invia("getC");
+        String collum="";
+        while (Objects.equals(tempi, ""))
+            collum = bluetooth.ricevi();
+        collum = collum.replace("COL:","");
+        ascoltatore.setColore(collum.split("LUM:")[0]);
+        luminosita.setProgress((Integer.parseInt(collum.split("LUM:")[1]) - 65) / 20);
+        ascoltatore.setLuce(collum.split("LUM:")[1]);
     }
 
     @Override
