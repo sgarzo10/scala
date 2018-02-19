@@ -7,7 +7,7 @@
 #include "FastLED.h"
 #include <SoftwareSerial.h>
 
-#define NUM_LEDS 8  //n. led nella striscia CRI = 8
+#define NUM_LEDS 40  //n. led nella striscia CRI = 8
 #define NUM_COL 8    //n. colori 
 #define DATA_PIN 9   //uscita per collegamento striscia led
 #define PIR_BASSO 2  //PIR Piano Terra
@@ -166,9 +166,9 @@ void letturaPir()
         luce = false;
       }  
     }
-    else
-      myprintln("LUCE RILEVATA SCALA OFF!!");
   }
+  else
+    myprintln("LUCE RILEVATA SCALA OFF!!");
 }
 
 boolean letturaLUCE()
@@ -177,9 +177,8 @@ boolean letturaLUCE()
   if (usaFOTO == true)
   {
     sign_LUCE=analogRead(FOTO_PIN);
-    myprint("Presenza LUCE: ");
-    myprintln((String)sign_LUCE);
-    if (not sign_LUCE>=sogliaBUIO)
+    myprintln("Presenza LUCE: " + (String)sign_LUCE);
+    if (not (sign_LUCE>=sogliaBUIO))
       presenza = true;
   }
   return presenza;    
@@ -213,13 +212,13 @@ void statoSCALA()
 
 void loop()
 {
-  //Lettura Pulsante Manuale
+  /*//Lettura Pulsante Manuale
   read_BUTTON();
   //Lettura abilitazione Fotoresistenza
   presenzaLUCE=letturaLUCE();
   //statoSCALA();
   letturaPir();
-  //Lettura Bluetooth
+  //Lettura Bluetooth*/
   BLUETOOTH_READ();
   if (BLUETOOTH_BUFFER != "")
     BLUETOOTH_COMMAND();

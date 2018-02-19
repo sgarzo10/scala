@@ -1,7 +1,6 @@
 package com.scala.bluetooth;
 
-
-public class MyHandler extends android.os.Handler{
+class MyHandler extends android.os.Handler{
 
     private StringBuilder sb;
     private String mexRicevuto;

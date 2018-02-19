@@ -12,9 +12,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import com.scala.R;
 import com.scala.bluetooth.BluetoothConnection;
-
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class ConnectionActivity extends AppCompatActivity {
 
@@ -105,29 +103,27 @@ public class ConnectionActivity extends AppCompatActivity {
             } else
                 output.setText(R.string.error);
         }
-        bluetooth.invia("getTGIU");
-        while (Objects.equals(tempi, ""))
-            tempi = bluetooth.ricevi();
+        scalaSu.setAlpha(0.5f);
+        scalaGiu.setAlpha(1f);
+        /*tempi = bluetooth.ricevi();
+        Log.i("CONNECTION_ACTIVITY",tempi);
+        output.setText(tempi);
         tempi = tempi.replace("tONd","");
         ascoltatore.setDirezione("GIU");
         tempo_ON.setText(tempi.split("tOFFd")[0]);
         tempo_OFF.setText(tempi.split("tOFFd")[1]);
-        scalaSu.setAlpha(0.5f);
-        scalaGiu.setAlpha(1f);
         bluetooth.invia("getC");
-        while (Objects.equals(tempi, ""))
-            collum = bluetooth.ricevi();
+        collum = bluetooth.ricevi();
         collum = collum.replace("COL:","");
         luminosita.setProgress((Integer.parseInt(collum.split("LUM:")[1]) - 65) / 20);
         ascoltatore.setColore(collum.split("LUM:")[0]);
         ascoltatore.setLuce(collum.split("LUM:")[1]);
         bluetooth.invia("getF");
-        while (Objects.equals(tempi, ""))
-            foto = bluetooth.ricevi();
+        foto = bluetooth.ricevi();
         if (Objects.equals(foto, "1"))
             fotoresistenza.setChecked(true);
         else
-            fotoresistenza.setChecked(false);
+            fotoresistenza.setChecked(false);*/
     }
 
     @Override
