@@ -7,7 +7,7 @@
 #include "FastLED.h"
 #include <SoftwareSerial.h>
 
-#define NUM_LEDS 40  //n. led nella striscia CRI = 7
+#define NUM_LEDS 7  //n. led nella striscia CRI = 7
 #define NUM_COL 8    //n. colori 
 #define DATA_PIN 9   //uscita per collegamento striscia led
 #define PIR_BASSO 2  //PIR Piano Terra
@@ -212,7 +212,7 @@ void statoSCALA()
 
 void loop()
 {
-  /*//Lettura Pulsante Manuale
+  //Lettura Pulsante Manuale
   read_BUTTON();
   //Lettura abilitazione Fotoresistenza
   presenzaLUCE=letturaLUCE();
@@ -228,7 +228,9 @@ void loop()
 void BLUETOOTH_READ(){
   BLUETOOTH_BUFFER = "";
   while (bluetooth.available())
+  {
     BLUETOOTH_BUFFER += (char)bluetooth.read();
+  }    
   if (!bluetooth.available() && BLUETOOTH_BUFFER != ""){
     myprintln("RX: " + BLUETOOTH_BUFFER);
     bluetooth.println("chk_"+BLUETOOTH_BUFFER);
@@ -340,7 +342,7 @@ String getNome(uint32_t valore)
   return nome;
 }
 
-void COMBO_1()
+void COMBO_3()
 {
   cambia_striscia(0, NUM_LEDS, 0, 100, lista_colori[0].valore);
   uint32_t colore = 0xFFFFFF;
@@ -348,24 +350,90 @@ void COMBO_1()
   for(int16_t i=0; i<NUM_LEDS;i++)
   {
     cambia_led(i, 140, colore);
+    delay(120);
     colore = colore - decremento;
   }
-  delay(300);
+  delay(500);
   cambia_striscia(0, NUM_LEDS, 0, 100, lista_colori[0].valore);
+}
+
+void COMBO_1()
+{
+  cambia_striscia(0, NUM_LEDS, 0, 100, lista_colori[0].valore);
+  uint32_t colore = 0xFFFFFF;
+  uint16_t decremento = colore / NUM_LEDS;
+  for(int16_t i=0; i<NUM_LEDS;i++)
+  {
+    if (i==0)
+      colore=0xFFFFFF;
+    if (i==1)
+      colore=0xFFFF00; //GIALLO
+    if (i==2)
+      colore=0xFF0000; //ROSSO
+    if (i==3)
+      colore=0xFF00FF; //FUCSIA 
+    if (i==4)
+      colore=0x0000FF; //BLU
+    if (i==5)
+      colore=0x00FFFF; //AZZURRO
+    if (i==6)
+      colore=0x00FF00; //VERDE
+          
+    cambia_led(i, 140, colore);
+    delay(120);
+    //colore = colore - decremento;
+  }
+  delay(500);
+  cambia_striscia(0, NUM_LEDS, 0, 100, lista_colori[0].valore);
+}
+
+
+void COMBO_2()
+{
+  myprintln("INIZIO COMBO 2----------------------");
+  for(int16_t i=0; i==2;i++)
+  {
+    
+    cambia_led(i, 140, 0XFFFF00);
+    cambia_led(NUM_LEDS-i, 140, 0X00FFFF);
+    delay(1000);
+  }
+  cambia_led(3, 140, 0x00FF00);
+  delay(1000);
+  myprintln("META' COMBO 2----------------------");
+  for(int16_t i=0; i==2;i++)
+  {
+    i=i+1;
+    cambia_led(3-i, 140, 0XFFFF00);
+    cambia_led(3+i, 140, 0X00FFFF);
+    delay(1000);
+    i=i-1;
+  }  
+  cambia_striscia(0, NUM_LEDS, 0, 100, lista_colori[0].valore);
+  myprintln("FINE COMBO 2----------------------");
 }
 
 void COMBO_2()
 {
-  cambia_striscia(0, NUM_LEDS, 0, 100, lista_colori[0].valore);
-  for(int16_t i=0; i < (NUM_LEDS / 2);i++)
+  myprintln("INIZIO COMBO 2----------------------");
+  for(int16_t x=0; i==2;i++)
   {
-    cambia_led(i, 140, 0x00FFFF);
-    cambia_led(NUM_LEDS-i, 140, 0x00FFFF);
+    
+    cambia_led(i, 140, 0XFFFF00);
+    cambia_led(NUM_LEDS-i, 140, 0X00FFFF);
+    delay(1000);
   }
-  for(int16_t i=0; i < (NUM_LEDS / 2);i++)
+  cambia_led(3, 140, 0x00FF00);
+  delay(1000);
+  myprintln("META' COMBO 2----------------------");
+  for(int16_t y=0; i==2;i++)
   {
-    cambia_led((NUM_LEDS / 2)+i, 140, 0xFFFF00);
-    cambia_led((NUM_LEDS / 2)-i, 140, 0xFFFF00);
-  }
+    y=y+1;
+    cambia_led(y-i, 140, 0XFFFF00);
+    cambia_led(y+i, 140, 0X00FFFF);
+    delay(1000);
+    y=y-1;
+  }  
   cambia_striscia(0, NUM_LEDS, 0, 100, lista_colori[0].valore);
+  myprintln("FINE COMBO 2----------------------");
 }
