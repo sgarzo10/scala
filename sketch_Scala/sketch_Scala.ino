@@ -7,7 +7,7 @@
 #include "FastLED.h"
 #include <SoftwareSerial.h>
 
-#define NUM_LEDS 40  //n. led nella striscia CRI = 7
+#define NUM_LEDS 7  //n. led nella striscia CRI = 7
 #define NUM_COL 8    //n. colori 
 #define DATA_PIN 9   //uscita per collegamento striscia led
 #define PIR_BASSO 2  //PIR Piano Terra
@@ -212,23 +212,27 @@ void statoSCALA()
 
 void loop()
 {
-  /*//Lettura Pulsante Manuale
+  /*
+  //Lettura Pulsante Manuale
   read_BUTTON();
   //Lettura abilitazione Fotoresistenza
   presenzaLUCE=letturaLUCE();
   //statoSCALA();
   letturaPir();
-  //Lettura Bluetooth*/
+  //Lettura Bluetooth
   BLUETOOTH_READ();
   if (BLUETOOTH_BUFFER != "")
-    BLUETOOTH_COMMAND();
+    BLUETOOTH_COMMAND();*/
+  COMBO_2();
   delay(200);
 }
 
 void BLUETOOTH_READ(){
   BLUETOOTH_BUFFER = "";
   while (bluetooth.available())
+  {
     BLUETOOTH_BUFFER += (char)bluetooth.read();
+  }    
   if (!bluetooth.available() && BLUETOOTH_BUFFER != ""){
     myprintln("RX: " + BLUETOOTH_BUFFER);
     bluetooth.println("chk_"+BLUETOOTH_BUFFER);
@@ -348,24 +352,32 @@ void COMBO_1()
   for(int16_t i=0; i<NUM_LEDS;i++)
   {
     cambia_led(i, 140, colore);
+    delay(120);
     colore = colore - decremento;
   }
-  delay(300);
-  cambia_striscia(0, NUM_LEDS, 0, 100, lista_colori[0].valore);
+  delay(500);
+  cambia_striscia(0, NUM_LEDS, 0, 100, getColor("BLK"));
+  delay(1000);
 }
 
 void COMBO_2()
 {
-  cambia_striscia(0, NUM_LEDS, 0, 100, lista_colori[0].valore);
-  for(int16_t i=0; i < (NUM_LEDS / 2);i++)
+  for(int16_t i=0; i<NUM_LEDS/2;i++)
   {
-    cambia_led(i, 140, 0x00FFFF);
-    cambia_led(NUM_LEDS-i, 140, 0x00FFFF);
+    cambia_led(i, 140, getColor("WHT"));//getColor("YEL")
+    cambia_led(NUM_LEDS-i-1, 140, getColor("WHT"));//getColor("AZU")
+    delay(1000);
   }
-  for(int16_t i=0; i < (NUM_LEDS / 2);i++)
+  cambia_led(NUM_LEDS/2, 140, getColor("WHT"));//getColor("GRN")
+  delay(500);
+  cambia_striscia(0,NUM_LEDS,0,100,getColor("BLK"));
+  delay(500);
+  for(int16_t i=0; i<NUM_LEDS/2;i++)
   {
-    cambia_led((NUM_LEDS / 2)+i, 140, 0xFFFF00);
-    cambia_led((NUM_LEDS / 2)-i, 140, 0xFFFF00);
+    cambia_led((NUM_LEDS/2)+i, 140, getColor("WHT"));//getColor("GRN")
+    cambia_led((NUM_LEDS/2)-i, 140, getColor("WHT"));//getColor("GRN")
+    delay(1000);
   }
-  cambia_striscia(0, NUM_LEDS, 0, 100, lista_colori[0].valore);
+  cambia_striscia(0, NUM_LEDS, 0, 100, getColor("BLK"));
+  delay(500);
 }
