@@ -7,7 +7,7 @@
 #include "FastLED.h"
 #include <SoftwareSerial.h>
 
-#define NUM_LEDS 7  //n. led nella striscia CRI = 7
+#define NUM_LEDS 191  //n. led nella striscia CRI = 191
 #define NUM_COL 8    //n. colori 
 #define DATA_PIN 9   //uscita per collegamento striscia led
 #define PIR_BASSO 2  //PIR Piano Terra
@@ -46,14 +46,15 @@ boolean mov_discesa=false;
 ||   5    ||  tempo/colore/luminosità pulsante OFF  ||
 ------------------------------------------------------
 */
-uint16_t tempi[6] = {100, 100, 100, 100, 0, 0};
+//Luminosita' MAX 145 MIN 200 Normale:175
+uint16_t tempi[6] = {60, 60, 60, 60, 0, 0};
 uint32_t colori[6] = {0xFFFFFF, 0x000000, 0xFFFFFF, 0x000000, 0xFFFFFF, 0x000000};
-uint8_t livelli[6] = {145, 145, 145, 145, 145, 145};
+uint8_t livelli[6] = {175, 175, 175, 175, 175, 175};
 
 
 //Variabili per gestione Fotoresistenza
 boolean usaFOTO = true;
-boolean presenzaLUCE =true;
+boolean presenzaLUCE =false;
 uint16_t sign_LUCE=0;
 uint16_t sogliaBUIO=380;
 
@@ -128,7 +129,7 @@ void letturaPir()
   myprintln((String)sign_PIR_BASSO);
   myprint("PIR ALTO:");
   myprintln((String)sign_PIR_ALTO);
-  if (presenzaLUCE==false)
+  if (presenzaLUCE==true)
   {
     //RILEVO PIR BASSO E NON PIR ALTO
     if (sign_PIR_BASSO==true and sign_PIR_ALTO==false)
@@ -184,6 +185,25 @@ boolean letturaLUCE()
   return presenza;    
 } 
 
+void read_BUTTON_2()
+{
+  sign_PULS=digitalRead(PULS_PIN);
+  myprint("BUTTON: ");
+  myprintln((String)sign_PULS);
+  if (sign_PULS==true and luce==true)
+  {
+    luce=false;
+    //cambia_striscia(0, NUM_LEDS, tempi[5], livelli[5], colori[5]);
+    cambia_striscia(0, NUM_LEDS, 0, livelli[5], colori[5]);
+  }
+  else if (sign_PULS==true and luce==false)
+  {
+    luce=true;
+    //cambia_striscia(0, NUM_LEDS, tempi[4], livelli[4], colori[4]);
+    cambia_striscia(0, NUM_LEDS, 0, livelli[4], colori[4]);
+  }
+}
+
 void read_BUTTON()
 {
   sign_PULS=digitalRead(PULS_PIN);
@@ -192,12 +212,20 @@ void read_BUTTON()
   if (sign_PULS==true and luce==true)
   {
     luce=false;
-    cambia_striscia(0, NUM_LEDS, tempi[5], livelli[5], colori[5]);
+    //cambia_striscia(0, NUM_LEDS, tempi[5], livelli[5], colori[5]);
+    if (digitalRead(PIR_ALTO)==true)
+      cambia_striscia(NUM_LEDS,0, 0, livelli[5], colori[5]);
+    else
+      cambia_striscia(0, NUM_LEDS, 0, livelli[5], colori[5]);  
   }
   else if (sign_PULS==true and luce==false)
   {
     luce=true;
-    cambia_striscia(0, NUM_LEDS, tempi[4], livelli[4], colori[4]);
+    //cambia_striscia(0, NUM_LEDS, tempi[4], livelli[4], colori[4]);
+    if (digitalRead(PIR_ALTO)==true)
+      cambia_striscia(NUM_LEDS,0 , tempi[4], livelli[4], colori[4]);
+    else
+      cambia_striscia(0, NUM_LEDS, tempi[4], livelli[4], colori[4]);
   }
 }
 
@@ -212,18 +240,19 @@ void statoSCALA()
 
 void loop()
 {
-  /*
   //Lettura Pulsante Manuale
   read_BUTTON();
+  //Reset Led nel caso di accensioni strane
+  if (luce==false)
+    cambia_striscia(0, NUM_LEDS, tempi[4], livelli[5], colori[5]);
   //Lettura abilitazione Fotoresistenza
   presenzaLUCE=letturaLUCE();
   //statoSCALA();
   letturaPir();
-  //Lettura Bluetooth
+  //Lettura Bluetooth*/
   BLUETOOTH_READ();
   if (BLUETOOTH_BUFFER != "")
-    BLUETOOTH_COMMAND();*/
-  COMBO_2();
+    BLUETOOTH_COMMAND();
   delay(200);
 }
 
@@ -344,7 +373,7 @@ String getNome(uint32_t valore)
   return nome;
 }
 
-void COMBO_1()
+void COMBO_3()
 {
   cambia_striscia(0, NUM_LEDS, 0, 100, lista_colori[0].valore);
   uint32_t colore = 0xFFFFFF;
@@ -356,28 +385,87 @@ void COMBO_1()
     colore = colore - decremento;
   }
   delay(500);
-  cambia_striscia(0, NUM_LEDS, 0, 100, getColor("BLK"));
-  delay(1000);
+  cambia_striscia(0, NUM_LEDS, 0, 100, lista_colori[0].valore);
 }
+
+void COMBO_1()
+{
+  cambia_striscia(0, NUM_LEDS, 0, 100, lista_colori[0].valore);
+  uint32_t colore = 0xFFFFFF;
+  uint16_t decremento = colore / NUM_LEDS;
+  for(int16_t i=0; i<NUM_LEDS;i++)
+  {
+    if (i==0)
+      colore=0xFFFFFF;
+    if (i==1)
+      colore=0xFFFF00; //GIALLO
+    if (i==2)
+      colore=0xFF0000; //ROSSO
+    if (i==3)
+      colore=0xFF00FF; //FUCSIA 
+    if (i==4)
+      colore=0x0000FF; //BLU
+    if (i==5)
+      colore=0x00FFFF; //AZZURRO
+    if (i==6)
+      colore=0x00FF00; //VERDE
+          
+    cambia_led(i, 140, colore);
+    delay(120);
+    //colore = colore - decremento;
+  }
+  delay(500);
+  cambia_striscia(0, NUM_LEDS, 0, 100, lista_colori[0].valore);
+}
+
 
 void COMBO_2()
 {
-  for(int16_t i=0; i<NUM_LEDS/2;i++)
+  myprintln("INIZIO COMBO 2----------------------");
+  for(int16_t i=0; i==2;i++)
   {
-    cambia_led(i, 140, getColor("WHT"));//getColor("YEL")
-    cambia_led(NUM_LEDS-i-1, 140, getColor("WHT"));//getColor("AZU")
+    
+    cambia_led(i, 140, 0XFFFF00);
+    cambia_led(NUM_LEDS-i, 140, 0X00FFFF);
     delay(1000);
   }
-  cambia_led(NUM_LEDS/2, 140, getColor("WHT"));//getColor("GRN")
-  delay(500);
-  cambia_striscia(0,NUM_LEDS,0,100,getColor("BLK"));
-  delay(500);
-  for(int16_t i=0; i<NUM_LEDS/2;i++)
+  cambia_led(3, 140, 0x00FF00);
+  delay(1000);
+  myprintln("META' COMBO 2----------------------");
+  for(int16_t i=0; i==2;i++)
   {
-    cambia_led((NUM_LEDS/2)+i, 140, getColor("WHT"));//getColor("GRN")
-    cambia_led((NUM_LEDS/2)-i, 140, getColor("WHT"));//getColor("GRN")
+    i=i+1;
+    cambia_led(3-i, 140, 0XFFFF00);
+    cambia_led(3+i, 140, 0X00FFFF);
     delay(1000);
-  }
-  cambia_striscia(0, NUM_LEDS, 0, 100, getColor("BLK"));
-  delay(500);
+    i=i-1;
+  }  
+  cambia_striscia(0, NUM_LEDS, 0, 100, lista_colori[0].valore);
+  myprintln("FINE COMBO 2----------------------");
 }
+
+/*void COMBO_2()
+{
+  myprintln("INIZIO COMBO 2----------------------");
+  for(int16_t x=0; i==2;i++)
+  {
+    
+    cambia_led(i, 140, 0XFFFF00);
+    cambia_led(NUM_LEDS-i, 140, 0X00FFFF);
+    delay(1000);
+  }
+  cambia_led(3, 140, 0x00FF00);
+  delay(1000);
+  myprintln("META' COMBO 2----------------------");
+  for(int16_t y=0; i==2;i++)
+  {
+    y=y+1;
+    cambia_led(y-i, 140, 0XFFFF00);
+    cambia_led(y+i, 140, 0X00FFFF);
+    delay(1000);
+    y=y-1;
+  }  
+  cambia_striscia(0, NUM_LEDS, 0, 100, lista_colori[0].valore);
+  myprintln("FINE COMBO 2----------------------");
+}
+*/
